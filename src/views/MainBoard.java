@@ -22,18 +22,23 @@ public class MainBoard extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         System.out.println("Action Performed");
-        int [][] gird = currentGrid.returnGrid();
+        currentGrid.updateGrid();
+        this.drawGrid();
+    }
 
+    public void start() {
+        gameController.start();
+    }
+
+    public void drawGrid() {
+        int [][] gird = currentGrid.returnGrid();
+        
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 20; j++) {
                 System.out.print(gird[i][j]);
             }
             System.out.println();
         }
-    }
-
-    public void start() {
-        gameController.start();
     }
 
 }

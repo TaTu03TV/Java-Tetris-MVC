@@ -20,7 +20,7 @@ public class Grid extends Observable implements ActionListener {
         }
 
         grid[0][0] = 1;
-        grid[0][1] = 1;
+        grid[0][1] = 3;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -38,10 +38,10 @@ public class Grid extends Observable implements ActionListener {
 
     public void updateGrid() {
         // descend toutes les lignes de 1
-        for (int i = 9; i > 0; i--) {
-            for (int j = 0; j < 20; j++) {
-                grid[i][j] = grid[i - 1][j];
-                grid[i - 1][j] = 0;
+        for (int j = 19; j > 0; j--) {
+            for (int i = 0; i < 10; i++) {
+                grid[i][j] = grid[i][j - 1];
+                grid[i][j - 1] = 0;
             }
         }
 

@@ -4,6 +4,7 @@ import java.awt.DisplayMode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
+import java.util.Random;
 
 public class Grid extends Observable implements ActionListener {
 
@@ -29,10 +30,8 @@ public class Grid extends Observable implements ActionListener {
         }
 
         // initialisation de la piece
-        PieceGrid[4][0] = 1;
-        PieceGrid[5][0] = 1;
-        PieceGrid[4][1] = 1;
-        PieceGrid[5][1] = 1;
+        
+        createNewPiece();
 
         // initialisation de la grille courante
 
@@ -62,6 +61,14 @@ public class Grid extends Observable implements ActionListener {
         descendPiece();
         fusionGrid();
 
+    }
+
+    public void createNewPiece() {
+        // Choisissez une couleur aléatoire
+        int color = new Random().nextInt(7) + 1;
+
+        // Créez une nouvelle pièce
+        Piece.placeRandomPiece(PieceGrid, color);
     }
 
     
@@ -98,10 +105,8 @@ public class Grid extends Observable implements ActionListener {
                 }
             }
             // crée une nouvelle pièce
-            PieceGrid[4][0] = 1;
-            PieceGrid[5][0] = 1;
-            PieceGrid[4][1] = 1;
-            PieceGrid[5][1] = 1;
+            
+            createNewPiece();
         }
     }
     

@@ -63,15 +63,6 @@ public class MainBoard extends JPanel implements Observer{
                     g.setColor(TetrisColor.getColorByValue(grid[i][j]).getColor());
                     g.fillRect(10 + i * 40, 140 + j * 40, 40, 40); // décalé de 10px à gauche et 30px vers le haut
 
-                    // ajoute des bordures au rectangle
-                    g.setColor(g.getColor().darker().darker());
-                    for (int k = 0; k < 4; k++) { // 4 is the thickness of the line
-                        g.drawLine(10 + i * 40, 140 + j * 40 + k, 50 + i * 40, 140 + j * 40 + k); // Top border
-                        g.drawLine(10 + i * 40, 180 + j * 40 - k, 50 + i * 40, 180 + j * 40 - k); // Bottom border
-                        g.drawLine(10 + i * 40 + k, 140 + j * 40, 10 + i * 40 + k, 180 + j * 40); // Left border
-                        g.drawLine(50 + i * 40 - k, 140 + j * 40, 50 + i * 40 - k, 180 + j * 40); // Right border
-                    }
-
                 }
                 else {
                     g.setColor(TetrisColor.getColorByValue(grid[i][j]).getColor());

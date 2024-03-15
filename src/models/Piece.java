@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Random;
 
 public enum Piece {
     I(new int[][]{
@@ -63,5 +64,20 @@ public enum Piece {
             }
         }
         this.shape = rotatedShape;
+    }
+
+    public static void placeRandomPiece(int[][] PieceGrid, int color) {
+        // Choisissez une pièce aléatoire
+        Piece[] pieces = Piece.values();
+        Piece randomPiece = pieces[new Random().nextInt(pieces.length)];
+
+        // Placez la pièce au milieu de la grille
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (randomPiece.getShape()[i][j] != 0) {
+                    PieceGrid[3 + i][j] = color;
+                }
+            }
+        }
     }
 }

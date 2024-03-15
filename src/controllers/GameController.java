@@ -13,7 +13,7 @@ public class GameController {
         System.out.println("GameController");
 
         this.grid = Grid;
-        timer = new Timer(1000, grid);
+        timer = new Timer(500, grid);
 
         timer.start();
     }

@@ -3,19 +3,22 @@ package views;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Observable;
+import java.util.Observer;
 
 
 import controllers.GameController;
 import models.Grid;
 
 
-public class MainBoard extends JPanel{
+public class MainBoard extends JPanel implements Observer{
 
     private static GameController gameController;
     private static Grid currentGrid;
     
     public MainBoard() {
         currentGrid = new Grid();
+        currentGrid.addObserver(this);
         gameController = new GameController(currentGrid);
         this.start();
     }
@@ -24,9 +27,13 @@ public class MainBoard extends JPanel{
         gameController.start();
     }
 
-    public void drawGrid() {
-        int [][] grid = currentGrid.returnGrid();
+    public void update(Observable o, Object arg) {
+        drawGrid(currentGrid.returnGrid());
+        System.err.println("MainBoard update");
+    }
 
+    public void drawGrid(int[][] grid) {
+        
         // clear le pannel
         Graphics g = this.getGraphics();
         g.clearRect(0, 0, this.getWidth(), this.getHeight());

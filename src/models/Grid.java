@@ -2,8 +2,9 @@ package models;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Observable;
 
-public class Grid implements ActionListener {
+public class Grid extends Observable implements ActionListener {
 
     private int[][] grid;
     
@@ -26,6 +27,9 @@ public class Grid implements ActionListener {
         System.out.println("Grid actionPerformed");
         updateGrid();
         printGrid();
+        setChanged();
+        notifyObservers();
+
     }
 
     public int[][] returnGrid() {

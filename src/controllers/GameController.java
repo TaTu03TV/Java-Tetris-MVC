@@ -13,8 +13,6 @@ public class GameController {
 
         timer = new Timer(1000, MainBoard);
 
-
-
         timer.start();
     }
 

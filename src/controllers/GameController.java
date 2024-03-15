@@ -2,16 +2,18 @@ package controllers;
 
 import javax.swing.Timer;
 
-import views.MainBoard;
+import models.Grid;
 
 public class GameController {
 
     private Timer timer;
+    private Grid grid;
     
-    public GameController(MainBoard MainBoard) {
+    public GameController(Grid Grid) {
         System.out.println("GameController");
 
-        timer = new Timer(1000, MainBoard);
+        this.grid = Grid;
+        timer = new Timer(1000, grid);
 
         timer.start();
     }

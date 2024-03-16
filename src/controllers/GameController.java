@@ -26,6 +26,11 @@ public class GameController {
                 if (e.getKeyChar() == 'd') {
                     PiecesActions.movePieceRight(grid.getPieceGrid());
                 }
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    while (grid.canDescend()) {
+                        grid.descendPiece();
+                    }
+                }
             }
         });
         board.setFocusable(true);

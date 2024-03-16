@@ -143,4 +143,8 @@ public class Grid extends Observable implements ActionListener {
         }
     }
 
+    public int[][] getPieceGrid() {
+        return PieceGrid;
+    }
+
 }

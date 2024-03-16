@@ -5,6 +5,7 @@ import javax.swing.Timer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import models.Grid;
+import models.PiecesActions;
 
 public class GameController {
     private Timer timer;
@@ -19,8 +20,11 @@ public class GameController {
         board.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == 'q') {
+                    PiecesActions.movePieceLeft(grid.getPieceGrid());
+                }
                 if (e.getKeyChar() == 'd') {
-                    System.out.println("Debug: 'd' key pressed");
+                    PiecesActions.movePieceRight(grid.getPieceGrid());
                 }
             }
         });

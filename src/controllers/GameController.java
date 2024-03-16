@@ -31,7 +31,7 @@ public class GameController {
                         grid.descendPiece();
                     }
                 }
-            }
+            } 
         });
         board.setFocusable(true);
     }

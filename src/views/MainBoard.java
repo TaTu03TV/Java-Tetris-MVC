@@ -33,7 +33,7 @@ public class MainBoard extends JPanel implements Observer{
 
         currentGrid = new Grid();
         currentGrid.addObserver(this);
-        gameController = new GameController(currentGrid);
+        gameController = new GameController(currentGrid, this);
         this.start();
     }
 

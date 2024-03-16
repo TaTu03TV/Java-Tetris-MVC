@@ -56,16 +56,6 @@ public enum Piece {
         return this.shape;
     }
 
-    public void rotate() {
-        int[][] rotatedShape = new int[4][4];
-        for (int i = 0; i < 4; ++i) {
-            for (int j = 0; j < 4; ++j) {
-                rotatedShape[i][j] = this.shape[4 - j - 1][i];
-            }
-        }
-        this.shape = rotatedShape;
-    }
-
     public static void placeRandomPiece(int[][] PieceGrid, int color) {
         // Choisissez une pièce aléatoire
         Piece[] pieces = Piece.values();

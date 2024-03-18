@@ -64,11 +64,9 @@ public class Grid extends Observable implements ActionListener {
     }
 
     public void createNewPiece() {
-        // Choisissez une couleur aléatoire
-        int color = new Random().nextInt(7) + 1;
 
         // Créez une nouvelle pièce
-        Piece.placeRandomPiece(PieceGrid, color);
+        Piece.placeRandomPiece(PieceGrid);
     }
 
     

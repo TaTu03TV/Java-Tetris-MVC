@@ -11,15 +11,16 @@ public class Grid extends Observable implements ActionListener {
     private int[][] DisplayGrid;
     private int[][] PieceGrid;
     private int[][] CurrentGrid;
+    private Piece currentPiece;
     private int score;
-    
+
     public Grid() {
         System.out.println("Grid");
 
         // initialisation des grilles
 
         DisplayGrid = new int[10][20];
-        PieceGrid = new int[10][20];
+        PieceGrid = new int[4][4];
         CurrentGrid = new int[10][20];
 
         score = 0;
@@ -27,13 +28,18 @@ public class Grid extends Observable implements ActionListener {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 20; j++) {
                 DisplayGrid[i][j] = 0;
-                PieceGrid[i][j] = 0;
                 CurrentGrid[i][j] = 0;
             }
         }
 
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                PieceGrid[i][j] = 0;
+            }
+        }
+
         // initialisation de la piece
-        
+
         createNewPiece();
 
         // initialisation de la grille courante
@@ -48,7 +54,7 @@ public class Grid extends Observable implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         System.out.println("Grid actionPerformed");
         updateGrid();
-        printGrid(DisplayGrid);
+        // printGrid(DisplayGrid);
         setChanged();
         notifyObservers();
 
@@ -63,25 +69,23 @@ public class Grid extends Observable implements ActionListener {
         clearDisplayGrid();
         descendPiece();
         fusionGrid();
-        if(suppriLigne()) {
+        if (suppriLigne()) {
             fusionGrid();
         }
-
 
     }
 
     public void createNewPiece() {
-
-        // Créez une nouvelle pièce
-        Piece.placeRandomPiece(PieceGrid);
+        currentPiece = Piece.placeRandomPiece(PieceGrid);
+        currentPiece.getPos()[0] = 0; // x position
+        currentPiece.getPos()[1] = 0; // y position
     }
 
-    
     public boolean canDescend() {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 19; j >= 0; j--) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 3; j >= 0; j--) {
                 if (PieceGrid[i][j] != 0) {
-                    if (j == 19 || CurrentGrid[i][j + 1] != 0) {
+                    if (j == 3 || CurrentGrid[i][j + 1] != 0) {
                         return false;
                     }
                 }
@@ -89,41 +93,35 @@ public class Grid extends Observable implements ActionListener {
         }
         return true;
     }
-    
+
     public void descendPiece() {
         if (canDescend()) {
-            // descend la piece
-            for (int j = 19; j > 0; j--) {
-                for (int i = 0; i < 10; i++) {
+            for (int j = 3; j > 0; j--) {
+                for (int i = 0; i < 4; i++) {
                     PieceGrid[i][j] = PieceGrid[i][j - 1];
                     PieceGrid[i][j - 1] = 0;
                 }
             }
         } else {
-            // ajoute la piece à CurrentGrid et crée une nouvelle pièce
-            for (int i = 0; i < 10; i++) {
-                for (int j = 0; j < 20; j++) {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
                     if (PieceGrid[i][j] != 0) {
-                        CurrentGrid[i][j] = PieceGrid[i][j];
+                        CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] = PieceGrid[i][j];
                         PieceGrid[i][j] = 0;
                     }
                 }
             }
-            // crée une nouvelle pièce
-            
             createNewPiece();
         }
     }
-    
-
-    public void fusionGrid(){
+    public void fusionGrid() {
         // fusionne la piece avec le reste de la grille
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 20; j++) {
                 if (PieceGrid[i][j] != 0) {
                     DisplayGrid[i][j] = PieceGrid[i][j];
                 }
-                if(CurrentGrid[i][j] != 0){
+                if (CurrentGrid[i][j] != 0) {
                     DisplayGrid[i][j] = CurrentGrid[i][j];
                 }
             }
@@ -152,9 +150,9 @@ public class Grid extends Observable implements ActionListener {
         return PieceGrid;
     }
 
-    public boolean suppriLigne(){
+    public boolean suppriLigne() {
         // supprime les lignes complètes (ligne et colonne inversé)
-        
+
         boolean complete = false;
         for (int j = 19; j >= 0; j--) {
             complete = true;
@@ -175,7 +173,7 @@ public class Grid extends Observable implements ActionListener {
             }
         }
         return complete;
-        
+
     }
 
 }

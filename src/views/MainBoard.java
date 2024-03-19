@@ -24,11 +24,15 @@ public class MainBoard extends JPanel implements Observer{
     private static GameController gameController;
     private static Grid currentGrid;
     private static JLabel Title;
+    private static JLabel Score;
+    private static JLabel NextPiece;
+    private static JLabel HoldPiece;
     private static Font font;
     
     private Image backgroundImage;
     
     public MainBoard() {
+        setLayout(null);
 
         // load font title
         try {
@@ -46,8 +50,26 @@ public class MainBoard extends JPanel implements Observer{
         Title = new JLabel("Tetris");
         Title.setForeground(Color.YELLOW);
         Title.setFont(font.deriveFont(50f));
-        Title.setBounds(10, 10, 100, 50);
+        Title.setBounds(200, 15, 500, 50);
         add(Title);
+
+        Score = new JLabel("Score: 0");
+        Score.setForeground(Color.RED);
+        Score.setFont(font.deriveFont(25f));
+        Score.setBounds(440, 100, 500, 25);
+        add(Score);
+
+        NextPiece = new JLabel("Next Piece");
+        NextPiece.setForeground(Color.RED);
+        NextPiece.setFont(font.deriveFont(25f));
+        NextPiece.setBounds(440, 270, 500, 25);
+        add(NextPiece);
+
+        HoldPiece = new JLabel("Hold Piece");
+        HoldPiece.setForeground(Color.RED);
+        HoldPiece.setFont(font.deriveFont(25f));
+        HoldPiece.setBounds(440, 450, 500, 25);
+        add(HoldPiece);
 
 
         currentGrid = new Grid();
@@ -68,6 +90,7 @@ public class MainBoard extends JPanel implements Observer{
 
     public void update(Observable o, Object arg) {
         drawGrid(currentGrid.returnGrid());
+        Score.setText("Score: " + currentGrid.returnScore());
         System.err.println("MainBoard update");
     }
 

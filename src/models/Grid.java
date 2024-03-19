@@ -42,7 +42,6 @@ public class Grid extends Observable implements ActionListener {
         CurrentGrid[8][19] = 1;
         CurrentGrid[7][19] = 1;
         CurrentGrid[6][19] = 1;
-
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -51,27 +50,25 @@ public class Grid extends Observable implements ActionListener {
         printGrid(DisplayGrid);
         setChanged();
         notifyObservers();
-
     }
 
     public int[][] returnGrid() {
         return DisplayGrid;
     }
 
+    public int returnScore() {
+        return score;
+    }
+
     public void updateGrid() {
         // descend toutes les lignes de 1
         clearDisplayGrid();
         descendPiece();
+        suppriLigne();
         fusionGrid();
-        if(suppriLigne()) {
-            fusionGrid();
-        }
-
-
     }
 
     public void createNewPiece() {
-
         // Créez une nouvelle pièce
         Piece.placeRandomPiece(PieceGrid);
     }
@@ -152,7 +149,7 @@ public class Grid extends Observable implements ActionListener {
         return PieceGrid;
     }
 
-    public boolean suppriLigne(){
+    public void suppriLigne(){
         // supprime les lignes complètes (ligne et colonne inversé)
         
         boolean complete = false;
@@ -174,7 +171,6 @@ public class Grid extends Observable implements ActionListener {
                 j++;
             }
         }
-        return complete;
         
     }
 

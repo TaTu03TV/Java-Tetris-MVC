@@ -72,6 +72,15 @@ public enum Piece {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (randomPiece.getShape()[i][j] != 0) {
+                    if(PieceGrid[3 + i][j] != 0) {
+                        // Si la pièce ne peut pas être placée, le jeu est terminé
+                        for (int k = 0; k < 10; k++) {
+                            for (int l = 0; l < 20; l++) {
+                                PieceGrid[k][l] = 0;
+                            }
+                        }
+                        return;
+                    }
                     PieceGrid[3 + i][j] = randomPiece.getColor();
                 }
             }

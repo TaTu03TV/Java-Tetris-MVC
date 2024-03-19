@@ -3,6 +3,7 @@ package models;
 import java.awt.DisplayMode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Time;
 import java.util.Observable;
 import java.util.Random;
 
@@ -47,7 +48,7 @@ public class Grid extends Observable implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         System.out.println("Grid actionPerformed");
         updateGrid();
-        printGrid(DisplayGrid);
+        //printGrid(DisplayGrid);
         setChanged();
         notifyObservers();
     }
@@ -62,15 +63,33 @@ public class Grid extends Observable implements ActionListener {
 
     public void updateGrid() {
         // descend toutes les lignes de 1
-        clearDisplayGrid();
-        descendPiece();
-        suppriLigne();
-        fusionGrid();
+        if(gameOver()){
+            // envoie un message de fin de jeu à la vue
+            setChanged();
+            notifyObservers("Game Over");
+        }
+        else{
+            clearDisplayGrid();
+            descendPiece();
+            suppriLigne();
+            fusionGrid();
+        }
     }
 
     public void createNewPiece() {
-        // Créez une nouvelle pièce
-        Piece.placeRandomPiece(PieceGrid);
+        // Créez une nouvelle pièce  
+        Piece.placeRandomPiece(PieceGrid);   
+    }
+
+    public boolean gameOver() {
+        // vérifie si le jeu est terminé
+        for (int i = 0; i < 10; i++) {
+            System.out.println(CurrentGrid[i][1]);
+            if (CurrentGrid[i][1] != 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     

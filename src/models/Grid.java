@@ -11,6 +11,7 @@ public class Grid extends Observable implements ActionListener {
     private int[][] DisplayGrid;
     private int[][] PieceGrid;
     private int[][] CurrentGrid;
+    private int score;
     
     public Grid() {
         System.out.println("Grid");
@@ -20,6 +21,8 @@ public class Grid extends Observable implements ActionListener {
         DisplayGrid = new int[10][20];
         PieceGrid = new int[10][20];
         CurrentGrid = new int[10][20];
+
+        score = 0;
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 20; j++) {
@@ -60,15 +63,17 @@ public class Grid extends Observable implements ActionListener {
         clearDisplayGrid();
         descendPiece();
         fusionGrid();
+        if(suppriLigne()) {
+            fusionGrid();
+        }
+
 
     }
 
     public void createNewPiece() {
-        // Choisissez une couleur aléatoire
-        int color = new Random().nextInt(7) + 1;
 
         // Créez une nouvelle pièce
-        Piece.placeRandomPiece(PieceGrid, color);
+        Piece.placeRandomPiece(PieceGrid);
     }
 
     
@@ -145,6 +150,32 @@ public class Grid extends Observable implements ActionListener {
 
     public int[][] getPieceGrid() {
         return PieceGrid;
+    }
+
+    public boolean suppriLigne(){
+        // supprime les lignes complètes (ligne et colonne inversé)
+        
+        boolean complete = false;
+        for (int j = 19; j >= 0; j--) {
+            complete = true;
+            for (int i = 0; i < 10; i++) {
+                if (CurrentGrid[i][j] == 0) {
+                    complete = false;
+                }
+            }
+            if (complete) {
+                System.out.println("ligne complète");
+                score += 1;
+                for (int k = j; k > 0; k--) {
+                    for (int i = 0; i < 10; i++) {
+                        CurrentGrid[i][k] = CurrentGrid[i][k - 1];
+                    }
+                }
+                j++;
+            }
+        }
+        return complete;
+        
     }
 
 }

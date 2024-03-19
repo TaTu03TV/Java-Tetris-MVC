@@ -3,13 +3,16 @@ package views;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.image.TileObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-
+import javax.swing.JLabel;
+import java.awt.Font;
 
 import controllers.GameController;
 import models.Grid;
@@ -20,16 +23,32 @@ public class MainBoard extends JPanel implements Observer{
 
     private static GameController gameController;
     private static Grid currentGrid;
+    private static JLabel Title;
+    private static Font font;
     
     private Image backgroundImage;
     
     public MainBoard() {
+
+        // load font title
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Font/telelower.ttf"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
         backgroundImage = ImageIO.read(new File("assets/Mockup/background.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Title = new JLabel("Tetris");
+        Title.setForeground(Color.YELLOW);
+        Title.setFont(font.deriveFont(50f));
+        Title.setBounds(10, 10, 100, 50);
+        add(Title);
+
 
         currentGrid = new Grid();
         currentGrid.addObserver(this);

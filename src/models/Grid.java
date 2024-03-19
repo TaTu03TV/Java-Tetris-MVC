@@ -159,7 +159,7 @@ public class Grid extends Observable implements ActionListener {
         for (int j = 19; j >= 0; j--) {
             complete = true;
             for (int i = 0; i < 10; i++) {
-                if (DisplayGrid[i][j] == 0) {
+                if (CurrentGrid[i][j] == 0) {
                     complete = false;
                 }
             }
@@ -168,7 +168,7 @@ public class Grid extends Observable implements ActionListener {
                 score += 1;
                 for (int k = j; k > 0; k--) {
                     for (int i = 0; i < 10; i++) {
-                        DisplayGrid[i][k] = DisplayGrid[i][k - 1];
+                        CurrentGrid[i][k] = CurrentGrid[i][k - 1];
                     }
                 }
                 j++;

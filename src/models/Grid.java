@@ -134,17 +134,24 @@ public class Grid extends Observable implements ActionListener {
         }
     }
     public void fusionGrid() {
-        // fusionne la piece avec le reste de la grille
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 20; j++) {
-                if (PieceGrid[i][j] != 0) {
-                    DisplayGrid[i][j] = PieceGrid[i][j];
-                }
-                if (CurrentGrid[i][j] != 0) {
-                    DisplayGrid[i][j] = CurrentGrid[i][j];
+        int xPos = currentPiece.getPos()[0];
+        int yPos = currentPiece.getPos()[1];
+
+        /* 
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (i + xPos < DisplayGrid.length && j + yPos < DisplayGrid[0].length) {
+                    if (PieceGrid[i][j] != 0) {
+                        DisplayGrid[i + xPos][j + yPos] = PieceGrid[i][j];
+                    }
+                    if (CurrentGrid[i + xPos][j + yPos] != 0) {
+                        DisplayGrid[i + xPos][j + yPos] = CurrentGrid[i + xPos][j + yPos];
+                    }
                 }
             }
         }
+        */
+        System.out.println("FusionGrid");
     }
 
     public void clearDisplayGrid() {

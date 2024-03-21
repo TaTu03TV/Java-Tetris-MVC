@@ -74,10 +74,9 @@ public class Grid extends Observable implements ActionListener {
         clearDisplayGrid();
         descendPiece();
         printGrid(PieceGrid);
-        printGrid(CurrentGrid);
 
 
-
+        System.out.println("Pos x: " + currentPiece.getPos()[0] + " Pos y: " + currentPiece.getPos()[1]);
 
 
         fusionGrid();
@@ -89,8 +88,7 @@ public class Grid extends Observable implements ActionListener {
 
     public void createNewPiece() {
         currentPiece = Piece.placeRandomPiece(PieceGrid);
-        currentPiece.getPos()[0] = 0; // x position
-        currentPiece.getPos()[1] = 0; // y position
+        currentPiece.setPos(3, 0);
     }
 
     public boolean canDescend() {
@@ -125,7 +123,6 @@ public class Grid extends Observable implements ActionListener {
     public void fusionGrid() {
         int xPos = currentPiece.getPos()[0];
         int yPos = currentPiece.getPos()[1];
-
         
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {

@@ -96,6 +96,10 @@ public class Grid extends Observable implements ActionListener {
     public boolean canDescend() {
         for (int i = 0; i < 4; i++) {
             for (int j = 3; j >= 0; j--) {
+                if (currentPiece.getPos()[1] + j + 1 > 20){
+                    return false;
+                }
+
                 if (PieceGrid[i][j] != 0) {
                     if (CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1] + 1] != 0) {
                         return false;
@@ -198,16 +202,44 @@ public class Grid extends Observable implements ActionListener {
     }
 
     public void movePieceLeft() {
-        int newX = currentPiece.getPos()[0] - 1;
-        if (newX >= 0) { // vérifie si la nouvelle position est dans la grille
-            currentPiece.setPos(newX, currentPiece.getPos()[1]);
+        boolean canMove = true;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (PieceGrid[i][j] != 0) {
+                    int newX = currentPiece.getPos()[0] + i - 1;
+                    if (newX < 0 || CurrentGrid[newX][currentPiece.getPos()[1] + j] != 0) {
+                        canMove = false;
+                        break;
+                    }
+                }
+            }
+            if (!canMove) {
+                break;
+            }
+        }
+        if (canMove) {
+            currentPiece.setPos(currentPiece.getPos()[0] - 1, currentPiece.getPos()[1]);
         }
     }
 
     public void movePieceRight() {
-        int newX = currentPiece.getPos()[0] + 1;
-        if (newX < 10) { // vérifie si la nouvelle position est dans la grille
-            currentPiece.setPos(newX, currentPiece.getPos()[1]);
+        boolean canMove = true;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (PieceGrid[i][j] != 0) {
+                    int newX = currentPiece.getPos()[0] + i + 1;
+                    if (newX >= 10 || CurrentGrid[newX][currentPiece.getPos()[1] + j] != 0) {
+                        canMove = false;
+                        break;
+                    }
+                }
+            }
+            if (!canMove) {
+                break;
+            }
+        }
+        if (canMove) {
+            currentPiece.setPos(currentPiece.getPos()[0] + 1, currentPiece.getPos()[1]);
         }
     }
 }

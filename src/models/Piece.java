@@ -73,6 +73,11 @@ public enum Piece {
         return pos;
     }
 
+    public void setPos(int x, int y){
+        this.xpos = x;
+        this.ypos = y;
+    }
+
     public static Piece placeRandomPiece(int[][] PieceGrid) {
         // Choose a random piece
         Piece[] pieces = Piece.values();

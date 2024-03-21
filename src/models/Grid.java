@@ -104,7 +104,7 @@ public class Grid extends Observable implements ActionListener {
         for (int i = 0; i < 4; i++) {
             for (int j = 3; j >= 0; j--) {
                 if (PieceGrid[i][j] != 0) {
-                    if (j == 3 || CurrentGrid[i][j + 1] != 0) {
+                    if (CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1] + 1] != 0) {
                         return false;
                     }
                 }
@@ -115,12 +115,7 @@ public class Grid extends Observable implements ActionListener {
 
     public void descendPiece() {
         if (canDescend()) {
-            for (int j = 3; j > 0; j--) {
-                for (int i = 0; i < 4; i++) {
-                    PieceGrid[i][j] = PieceGrid[i][j - 1];
-                    PieceGrid[i][j - 1] = 0;
-                }
-            }
+            currentPiece.setPos(currentPiece.getPos()[0], currentPiece.getPos()[1] + 1);
         } else {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
@@ -137,7 +132,7 @@ public class Grid extends Observable implements ActionListener {
         int xPos = currentPiece.getPos()[0];
         int yPos = currentPiece.getPos()[1];
 
-        /* 
+        
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i + xPos < DisplayGrid.length && j + yPos < DisplayGrid[0].length) {
@@ -150,7 +145,6 @@ public class Grid extends Observable implements ActionListener {
                 }
             }
         }
-        */
         System.out.println("FusionGrid");
     }
 
@@ -164,12 +158,12 @@ public class Grid extends Observable implements ActionListener {
     }
 
     public void printGrid(int[][] grid) {
-        final int w = grid.length;
-        final int h = grid[0].length;
+        int w = grid.length;
+        int h = grid[0].length;
 
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
-                System.out.print(grid[i][j]);
+                System.out.print(grid[j][i]);
             }
             System.out.println();
         }

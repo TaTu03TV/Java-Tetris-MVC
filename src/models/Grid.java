@@ -3,6 +3,7 @@ package models;
 import java.awt.DisplayMode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Time;
 import java.util.Observable;
 import java.util.Random;
 
@@ -53,20 +54,21 @@ public class Grid extends Observable implements ActionListener {
         CurrentGrid[8][19] = 1;
         CurrentGrid[7][19] = 1;
         CurrentGrid[6][19] = 1;
-
     }
 
     public void actionPerformed(ActionEvent e) {
         System.out.println("Grid actionPerformed");
         updateGrid();
-        // printGrid(DisplayGrid);
         setChanged();
         notifyObservers();
-
     }
 
     public int[][] returnGrid() {
         return DisplayGrid;
+    }
+
+    public int returnScore() {
+        return score;
     }
 
     public void updateGrid() {
@@ -89,6 +91,7 @@ public class Grid extends Observable implements ActionListener {
     public void createNewPiece() {
         currentPiece = Piece.placeRandomPiece(PieceGrid);
         currentPiece.setPos(3, 0);
+
     }
 
     public boolean canDescend() {
@@ -170,6 +173,7 @@ public class Grid extends Observable implements ActionListener {
     }
 
     public boolean suppriLigne() {
+
         // supprime les lignes complètes (ligne et colonne inversé)
 
         boolean complete = false;
@@ -235,6 +239,7 @@ public class Grid extends Observable implements ActionListener {
         if (canMove) {
             currentPiece.setPos(currentPiece.getPos()[0] + 1, currentPiece.getPos()[1]);
         }
+
     }
 
     public void rotatePiece(){

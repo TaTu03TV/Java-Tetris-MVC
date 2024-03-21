@@ -12,15 +12,16 @@ public class Grid extends Observable implements ActionListener {
     private int[][] DisplayGrid;
     private int[][] PieceGrid;
     private int[][] CurrentGrid;
+    private Piece currentPiece;
     private int score;
-    
+
     public Grid() {
         System.out.println("Grid");
 
         // initialisation des grilles
 
         DisplayGrid = new int[10][20];
-        PieceGrid = new int[10][20];
+        PieceGrid = new int[4][4];
         CurrentGrid = new int[10][20];
 
         score = 0;
@@ -28,13 +29,23 @@ public class Grid extends Observable implements ActionListener {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 20; j++) {
                 DisplayGrid[i][j] = 0;
-                PieceGrid[i][j] = 0;
                 CurrentGrid[i][j] = 0;
             }
         }
 
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                PieceGrid[i][j] = 0;
+            }
+        }
+
+
+
+        //for debug we print the grid
+        printGrid(PieceGrid);
+
         // initialisation de la piece
-        
+
         createNewPiece();
 
         // initialisation de la grille courante
@@ -48,7 +59,6 @@ public class Grid extends Observable implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         System.out.println("Grid actionPerformed");
         updateGrid();
-        //printGrid(DisplayGrid);
         setChanged();
         notifyObservers();
     }
@@ -63,41 +73,33 @@ public class Grid extends Observable implements ActionListener {
 
     public void updateGrid() {
         // descend toutes les lignes de 1
-        if(gameOver()){
-            // envoie un message de fin de jeu à la vue
-            setChanged();
-            notifyObservers("Game Over");
-        }
-        else{
-            clearDisplayGrid();
-            descendPiece();
-            suppriLigne();
+        clearDisplayGrid();
+        descendPiece();
+        printGrid(PieceGrid);
+
+
+        System.out.println("Pos x: " + currentPiece.getPos()[0] + " Pos y: " + currentPiece.getPos()[1]);
+
+
+        fusionGrid();
+        if (suppriLigne()) {
             fusionGrid();
         }
+
     }
 
     public void createNewPiece() {
-        // Créez une nouvelle pièce  
-        Piece.placeRandomPiece(PieceGrid);   
+        currentPiece = Piece.placeRandomPiece(PieceGrid);
+        currentPiece.setPos(3, 0);
+
     }
 
-    public boolean gameOver() {
-        // vérifie si le jeu est terminé
-        for (int i = 0; i < 10; i++) {
-            System.out.println(CurrentGrid[i][1]);
-            if (CurrentGrid[i][1] != 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    
     public boolean canDescend() {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 19; j >= 0; j--) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
-                    if (j == 19 || CurrentGrid[i][j + 1] != 0) {
+                    int newY = currentPiece.getPos()[1] + j + 1;
+                    if (newY >= 20 || CurrentGrid[currentPiece.getPos()[0] + i][newY] != 0) {
                         return false;
                     }
                 }
@@ -105,45 +107,44 @@ public class Grid extends Observable implements ActionListener {
         }
         return true;
     }
-    
+
     public void descendPiece() {
         if (canDescend()) {
-            // descend la piece
-            for (int j = 19; j > 0; j--) {
-                for (int i = 0; i < 10; i++) {
-                    PieceGrid[i][j] = PieceGrid[i][j - 1];
-                    PieceGrid[i][j - 1] = 0;
-                }
-            }
+            currentPiece.setPos(currentPiece.getPos()[0], currentPiece.getPos()[1] + 1);
         } else {
-            // ajoute la piece à CurrentGrid et crée une nouvelle pièce
-            for (int i = 0; i < 10; i++) {
-                for (int j = 0; j < 20; j++) {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
                     if (PieceGrid[i][j] != 0) {
-                        CurrentGrid[i][j] = PieceGrid[i][j];
+                        CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] = PieceGrid[i][j];
                         PieceGrid[i][j] = 0;
                     }
                 }
             }
-            // crée une nouvelle pièce
-            
             createNewPiece();
         }
     }
-    
+    public void fusionGrid() {
+        int xPos = currentPiece.getPos()[0];
+        int yPos = currentPiece.getPos()[1];
+        
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (i + xPos < DisplayGrid.length && j + yPos < DisplayGrid[0].length) {
+                    if (PieceGrid[i][j] != 0) {
+                        DisplayGrid[i + xPos][j + yPos] = PieceGrid[i][j];
+                    }
+                }
+            }
+        }
 
-    public void fusionGrid(){
-        // fusionne la piece avec le reste de la grille
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 20; j++) {
-                if (PieceGrid[i][j] != 0) {
-                    DisplayGrid[i][j] = PieceGrid[i][j];
-                }
-                if(CurrentGrid[i][j] != 0){
+                if (CurrentGrid[i][j] != 0) {
                     DisplayGrid[i][j] = CurrentGrid[i][j];
                 }
             }
         }
+        System.out.println("FusionGrid");
     }
 
     public void clearDisplayGrid() {
@@ -156,9 +157,12 @@ public class Grid extends Observable implements ActionListener {
     }
 
     public void printGrid(int[][] grid) {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 20; j++) {
-                System.out.print(grid[i][j]);
+        int w = grid.length;
+        int h = grid[0].length;
+
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                System.out.print(grid[j][i]);
             }
             System.out.println();
         }
@@ -168,9 +172,10 @@ public class Grid extends Observable implements ActionListener {
         return PieceGrid;
     }
 
-    public void suppriLigne(){
+    public boolean suppriLigne() {
+
         // supprime les lignes complètes (ligne et colonne inversé)
-        
+
         boolean complete = false;
         for (int j = 19; j >= 0; j--) {
             complete = true;
@@ -190,7 +195,81 @@ public class Grid extends Observable implements ActionListener {
                 j++;
             }
         }
-        
+        return complete;
+
     }
 
+    public void movePieceLeft() {
+        boolean canMove = true;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (PieceGrid[i][j] != 0) {
+                    int newX = currentPiece.getPos()[0] + i - 1;
+                    if (newX < 0 || CurrentGrid[newX][currentPiece.getPos()[1] + j] != 0) {
+                        canMove = false;
+                        break;
+                    }
+                }
+            }
+            if (!canMove) {
+                break;
+            }
+        }
+        if (canMove) {
+            currentPiece.setPos(currentPiece.getPos()[0] - 1, currentPiece.getPos()[1]);
+        }
+    }
+
+    public void movePieceRight() {
+        boolean canMove = true;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (PieceGrid[i][j] != 0) {
+                    int newX = currentPiece.getPos()[0] + i + 1;
+                    if (newX >= 10 || CurrentGrid[newX][currentPiece.getPos()[1] + j] != 0) {
+                        canMove = false;
+                        break;
+                    }
+                }
+            }
+            if (!canMove) {
+                break;
+            }
+        }
+        if (canMove) {
+            currentPiece.setPos(currentPiece.getPos()[0] + 1, currentPiece.getPos()[1]);
+        }
+
+    }
+
+    public void rotatePiece(){
+        int[][] newPieceGrid = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                newPieceGrid[i][j] = PieceGrid[3 - j][i];
+            }
+        }
+        PieceGrid = newPieceGrid;
+    }
+
+    public boolean canRotate(){
+        int[][] newPieceGrid = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                newPieceGrid[i][j] = PieceGrid[3 - j][i];
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (newPieceGrid[i][j] != 0) {
+                    int newX = currentPiece.getPos()[0] + i;
+                    int newY = currentPiece.getPos()[1] + j;
+                    if (newX < 0 || newX >= 10 || newY >= 20 || CurrentGrid[newX][newY] != 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

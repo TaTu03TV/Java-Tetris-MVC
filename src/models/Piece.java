@@ -2,88 +2,63 @@ package models;
 
 import java.util.Random;
 
-public enum Piece {
-    I(new int[][]{
-        {0, 0, 0, 0},
-        {1, 1, 1, 1},
-        {0, 0, 0, 0},
-        {0, 0, 0, 0}
-    }, 1),
-    O(new int[][]{
-        {0, 1, 1, 0},
-        {0, 1, 1, 0},
-        {0, 0, 0, 0},
-        {0, 0, 0, 0}
-    }, 2),
-    T(new int[][]{
-        {0, 1, 0, 0},
-        {1, 1, 1, 0},
-        {0, 0, 0, 0},
-        {0, 0, 0, 0}
-    }, 3),
-    S(new int[][]{
-        {0, 1, 1, 0},
-        {1, 1, 0, 0},
-        {0, 0, 0, 0},
-        {0, 0, 0, 0}
-    }, 4),
-    Z(new int[][]{
-        {1, 1, 0, 0},
-        {0, 1, 1, 0},
-        {0, 0, 0, 0},
-        {0, 0, 0, 0}
-    }, 5),
-    J(new int[][]{
-        {1, 0, 0, 0},
-        {1, 1, 1, 0},
-        {0, 0, 0, 0},
-        {0, 0, 0, 0}
-    }, 6),
-    L(new int[][]{
-        {0, 0, 1, 0},
-        {1, 1, 1, 0},
-        {0, 0, 0, 0},
-        {0, 0, 0, 0}
-    }, 7);
+public class Piece {
 
-    private int[][] shape;
-
+    private PieceShape shape;
     private int color;
+    private int xpos;
+    private int ypos;
 
-    Piece(int[][] shape, int color) {
+    public Piece(PieceShape shape, int xpos, int ypos) {
         this.shape = shape;
-        this.color = color;
+        this.color = 0;
+        this.xpos = xpos;
+        this.ypos = ypos;
     }
 
     public int[][] getShape() {
-        return this.shape;
+        return this.shape.getShape();
     }
 
     public int getColor() {
         return this.color;
     }
 
-    public static void placeRandomPiece(int[][] PieceGrid) {
-        // Choisissez une pièce aléatoire
-        Piece[] pieces = Piece.values();
-        Piece randomPiece = pieces[new Random().nextInt(pieces.length)];
+    public void setColor(int color) {
+        this.color = color;
+    }
+    
+    public int[] getPos(){
+        int[] pos = {this.xpos, this.ypos};
+        return pos;
+    }
 
-        // Placez la pièce au milieu de la grille
+    public void setPos(int x, int y){
+        this.xpos = x;
+        this.ypos = y;
+    }
+
+    public static Piece placeRandomPiece(int[][] PieceGrid) {
+        PieceShape[] shapes = PieceShape.values();
+        PieceShape randomShape = shapes[new Random().nextInt(shapes.length)];
+
+
+        // Create a new piece with the random shape
+        Piece randomPiece = new Piece(randomShape, 5, 0);
+        randomPiece.setColor(randomShape.getColor());
+    
+        // Place the piece at the middle of the grid
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (randomPiece.getShape()[i][j] != 0) {
-                    if(PieceGrid[3 + i][j] != 0) {
-                        // Si la pièce ne peut pas être placée, le jeu est terminé
-                        for (int k = 0; k < 10; k++) {
-                            for (int l = 0; l < 20; l++) {
-                                PieceGrid[k][l] = 0;
-                            }
-                        }
-                        return;
-                    }
-                    PieceGrid[3 + i][j] = randomPiece.getColor();
+
+                    PieceGrid[i][j] = randomPiece.getColor();
+
                 }
             }
         }
+    
+        return randomPiece;
     }
 }
+

@@ -21,14 +21,24 @@ public class GameController {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyChar() == 'q') {
-                    PiecesActions.movePieceLeft(grid.getPieceGrid());
+                    grid.movePieceLeft();
                 }
                 if (e.getKeyChar() == 'd') {
-                    PiecesActions.movePieceRight(grid.getPieceGrid());
+                    grid.movePieceRight();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     while (grid.canDescend()) {
                         grid.descendPiece();
+                    }
+                }
+                if(e.getKeyChar() == 's'){
+                    if(grid.canDescend()){
+                        grid.descendPiece();
+                    }
+                }
+                if(e.getKeyChar() == 'z'){
+                    if(grid.canRotate()){
+                        grid.rotatePiece();
                     }
                 }
             } 

@@ -5,7 +5,6 @@ import javax.swing.Timer;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import models.Grid;
-import models.PiecesActions;
 
 public class GameController {
     private Timer timer;

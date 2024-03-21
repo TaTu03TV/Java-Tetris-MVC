@@ -197,4 +197,17 @@ public class Grid extends Observable implements ActionListener {
 
     }
 
+    public void movePieceLeft() {
+        int newX = currentPiece.getPos()[0] - 1;
+        if (newX >= 0) { // vérifie si la nouvelle position est dans la grille
+            currentPiece.setPos(newX, currentPiece.getPos()[1]);
+        }
+    }
+
+    public void movePieceRight() {
+        int newX = currentPiece.getPos()[0] + 1;
+        if (newX < 10) { // vérifie si la nouvelle position est dans la grille
+            currentPiece.setPos(newX, currentPiece.getPos()[1]);
+        }
+    }
 }

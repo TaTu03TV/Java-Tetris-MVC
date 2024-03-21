@@ -95,13 +95,10 @@ public class Grid extends Observable implements ActionListener {
 
     public boolean canDescend() {
         for (int i = 0; i < 4; i++) {
-            for (int j = 3; j >= 0; j--) {
-                if (currentPiece.getPos()[1] + j + 1 > 20){
-                    return false;
-                }
-
+            for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
-                    if (CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1] + 1] != 0) {
+                    int newY = currentPiece.getPos()[1] + j + 1;
+                    if (newY >= 20 || CurrentGrid[currentPiece.getPos()[0] + i][newY] != 0) {
                         return false;
                     }
                 }

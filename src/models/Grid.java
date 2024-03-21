@@ -71,13 +71,8 @@ public class Grid extends Observable implements ActionListener {
 
     public void updateGrid() {
         // descend toutes les lignes de 1
-        System.out.println("Until here, it's working");
         clearDisplayGrid();
-        System.out.println("clearDisplayGrid WORked");
         descendPiece();
-        System.out.println("descendPiece WORked");
-
-        System.out.println("At this point we have this grids:");
         printGrid(PieceGrid);
         printGrid(CurrentGrid);
 
@@ -86,11 +81,9 @@ public class Grid extends Observable implements ActionListener {
 
 
         fusionGrid();
-        System.out.println("fusionGrid WORked");
         if (suppriLigne()) {
             fusionGrid();
         }
-        System.out.println("suppriLigne WORked");
 
     }
 
@@ -139,9 +132,14 @@ public class Grid extends Observable implements ActionListener {
                     if (PieceGrid[i][j] != 0) {
                         DisplayGrid[i + xPos][j + yPos] = PieceGrid[i][j];
                     }
-                    if (CurrentGrid[i + xPos][j + yPos] != 0) {
-                        DisplayGrid[i + xPos][j + yPos] = CurrentGrid[i + xPos][j + yPos];
-                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 20; j++) {
+                if (CurrentGrid[i][j] != 0) {
+                    DisplayGrid[i][j] = CurrentGrid[i][j];
                 }
             }
         }

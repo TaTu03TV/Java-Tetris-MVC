@@ -31,6 +31,16 @@ public class GameController {
                         grid.descendPiece();
                     }
                 }
+                if(e.getKeyChar() == 's'){
+                    if(grid.canDescend()){
+                        grid.descendPiece();
+                    }
+                }
+                if(e.getKeyChar() == 'z'){
+                    if(grid.canRotate()){
+                        grid.rotatePiece();
+                    }
+                }
             } 
         });
         board.setFocusable(true);

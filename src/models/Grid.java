@@ -236,4 +236,35 @@ public class Grid extends Observable implements ActionListener {
             currentPiece.setPos(currentPiece.getPos()[0] + 1, currentPiece.getPos()[1]);
         }
     }
+
+    public void rotatePiece(){
+        int[][] newPieceGrid = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                newPieceGrid[i][j] = PieceGrid[3 - j][i];
+            }
+        }
+        PieceGrid = newPieceGrid;
+    }
+
+    public boolean canRotate(){
+        int[][] newPieceGrid = new int[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                newPieceGrid[i][j] = PieceGrid[3 - j][i];
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (newPieceGrid[i][j] != 0) {
+                    int newX = currentPiece.getPos()[0] + i;
+                    int newY = currentPiece.getPos()[1] + j;
+                    if (newX < 0 || newX >= 10 || newY >= 20 || CurrentGrid[newX][newY] != 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

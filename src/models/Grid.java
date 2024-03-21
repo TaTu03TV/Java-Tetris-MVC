@@ -13,6 +13,8 @@ public class Grid extends Observable implements ActionListener {
     private int[][] PieceGrid;
     private int[][] CurrentGrid;
     private Piece currentPiece;
+    private Piece ghostPiece;
+    private int ghostColor = 3; // or any other distinct color
     private int score;
 
     public Grid() {
@@ -39,9 +41,7 @@ public class Grid extends Observable implements ActionListener {
             }
         }
 
-
-
-        //for debug we print the grid
+        // for debug we print the grid
         printGrid(PieceGrid);
 
         // initialisation de la piece
@@ -63,6 +63,27 @@ public class Grid extends Observable implements ActionListener {
         notifyObservers();
     }
 
+    public void calculateGhostPiece() {
+        ghostPiece = new Piece(currentPiece);
+        while (canDescend(ghostPiece)) {
+            ghostPiece.setPos(ghostPiece.getPos()[0], ghostPiece.getPos()[1] + 1);
+        }
+    }
+
+    public boolean canDescend(Piece piece) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (PieceGrid[i][j] != 0) {
+                    int newY = piece.getPos()[1] + j + 1;
+                    if (newY >= 20 || CurrentGrid[piece.getPos()[0] + i][newY] != 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public int[][] returnGrid() {
         return DisplayGrid;
     }
@@ -77,11 +98,10 @@ public class Grid extends Observable implements ActionListener {
         descendPiece();
         printGrid(PieceGrid);
 
-
         System.out.println("Pos x: " + currentPiece.getPos()[0] + " Pos y: " + currentPiece.getPos()[1]);
 
-
         fusionGrid();
+        calculateGhostPiece();
         if (suppriLigne()) {
             fusionGrid();
         }
@@ -91,6 +111,7 @@ public class Grid extends Observable implements ActionListener {
     public void createNewPiece() {
         currentPiece = Piece.placeRandomPiece(PieceGrid);
         currentPiece.setPos(3, 0);
+        ghostPiece = new Piece(currentPiece);
 
     }
 
@@ -123,10 +144,23 @@ public class Grid extends Observable implements ActionListener {
             createNewPiece();
         }
     }
+
     public void fusionGrid() {
         int xPos = currentPiece.getPos()[0];
         int yPos = currentPiece.getPos()[1];
-        
+
+        // Draw the ghostPiece with a different color
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (i + ghostPiece.getPos()[0] < DisplayGrid.length
+                        && j + ghostPiece.getPos()[1] < DisplayGrid[0].length) {
+                    if (PieceGrid[i][j] != 0) {
+                        DisplayGrid[i + ghostPiece.getPos()[0]][j + ghostPiece.getPos()[1]] = ghostColor;
+                    }
+                }
+            }
+        }
+
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i + xPos < DisplayGrid.length && j + yPos < DisplayGrid[0].length) {
@@ -242,7 +276,7 @@ public class Grid extends Observable implements ActionListener {
 
     }
 
-    public void rotatePiece(){
+    public void rotatePiece() {
         int[][] newPieceGrid = new int[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -252,7 +286,7 @@ public class Grid extends Observable implements ActionListener {
         PieceGrid = newPieceGrid;
     }
 
-    public boolean canRotate(){
+    public boolean canRotate() {
         int[][] newPieceGrid = new int[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {

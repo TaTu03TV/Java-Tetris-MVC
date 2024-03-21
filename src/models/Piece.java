@@ -16,6 +16,13 @@ public class Piece {
         this.ypos = ypos;
     }
 
+    public Piece(Piece other) { //constructeur par copie
+        this.shape = other.shape;
+        this.color = other.color;
+        this.xpos = other.xpos;
+        this.ypos = other.ypos;
+    }
+
     public int[][] getShape() {
         return this.shape.getShape();
     }

@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JLabel;
-import java.awt.Font;
+import javax.swing.JOptionPane;
+
 
 import controllers.GameController;
 import models.Grid;
@@ -91,9 +92,11 @@ public class MainBoard extends JPanel implements Observer{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(backgroundImage, -10, 0, this);
+        drawGrid(currentGrid.returnGrid(), g);
     }
 
     public void start() {
+        currentGrid.start();
         gameController.start();
     }
 
@@ -101,7 +104,7 @@ public class MainBoard extends JPanel implements Observer{
         System.out.println(arg);
         if(arg == null && !GameOver.isVisible()) {
             System.err.println("MainBoard update");
-            drawGrid(currentGrid.returnGrid());
+            repaint();
             Score.setText("Score: " + currentGrid.returnScore());
         }
         else{
@@ -109,6 +112,20 @@ public class MainBoard extends JPanel implements Observer{
                 System.out.println("Game Over");
                 if(!GameOver.isVisible()) clearDisplayGrid();
                 GameOver.setVisible(true);
+
+                // Affiche une boîte de dialogue
+                int response = JOptionPane.showOptionDialog(null, "Game Over. Que voulez-vous faire ?", "Game Over",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] { "Rejouer", "Quitter" }, "Rejouer");
+
+                if (response == 0) {
+                    // Si l'utilisateur choisit "Rejouer", réinitialisez le jeu
+                    System.out.println("Rejouer");
+                    resetGame();
+                } else {
+                    // Si l'utilisateur choisit "Quitter", arrêtez le jeu
+                    System.out.println("Quitter");
+                    System.exit(0);
+                }
             }
             else{
                 System.err.println("error obervation arg not recognized");
@@ -116,9 +133,17 @@ public class MainBoard extends JPanel implements Observer{
         }
     }
 
-    public void drawGrid(int[][] grid) {
+    public void resetGame() {
+        GameOver.setVisible(false);
+        currentGrid.reset();
+        Score.setText("Score: 0");
+
+    }
+
+    public void drawGrid(int[][] grid, Graphics g) {
         // clear le pannel
-        Graphics g = this.getGraphics();
+        g.setColor(new Color(47, 39, 41));
+        g.fillRect(10, 140, 400, 800);
         
         // affiche des carré de couleur rouge où grid contient 1
         for (int i = 0; i < grid.length; i++) {
@@ -126,7 +151,6 @@ public class MainBoard extends JPanel implements Observer{
                 if (grid[i][j] == 1) {
                     g.setColor(TetrisColor.getColorByValue(grid[i][j]).getColor());
                     g.fillRect(10 + i * 40, 140 + j * 40, 40, 40); // décalé de 10px à gauche et 30px vers le haut
-
                 }
                 else {
                     g.setColor(TetrisColor.getColorByValue(grid[i][j]).getColor());

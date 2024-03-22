@@ -1,13 +1,9 @@
 package models;
 
-import java.awt.DisplayMode;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Time;
 import java.util.Observable;
-import java.util.Random;
 
-public class Grid extends Observable implements ActionListener {
+
+public class Grid extends Observable {
 
     private int[][] DisplayGrid;
     private int[][] PieceGrid;
@@ -16,6 +12,7 @@ public class Grid extends Observable implements ActionListener {
     private Piece ghostPiece;
     private int ghostColor = 3; // or any other distinct color
     private int score;
+    private int descendingSpeed;
 
     public Grid() {
         System.out.println("Grid");
@@ -25,6 +22,8 @@ public class Grid extends Observable implements ActionListener {
         DisplayGrid = new int[10][20];
         PieceGrid = new int[4][4];
         CurrentGrid = new int[10][20];
+
+        descendingSpeed = 0;
 
         score = 0;
 
@@ -48,19 +47,48 @@ public class Grid extends Observable implements ActionListener {
 
         createNewPiece();
 
-        // initialisation de la grille courante
-
-        CurrentGrid[9][19] = 1;
-        CurrentGrid[8][19] = 1;
-        CurrentGrid[7][19] = 1;
-        CurrentGrid[6][19] = 1;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("Grid actionPerformed");
-        updateGrid();
-        setChanged();
-        notifyObservers();
+    public void reset(){
+        score = 0;
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 20; j++) {
+                DisplayGrid[i][j] = 0;
+                CurrentGrid[i][j] = 0;
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                PieceGrid[i][j] = 0;
+            }
+        }
+
+        createNewPiece();
+    }
+
+    private class GridRunnable implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(75);
+                    
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            
+                System.out.println("Grid actionPerformed");
+                updateGrid();
+                // printGrid(DisplayGrid);
+                setChanged();
+                notifyObservers();
+            }
+        }
+    }
+
+    public void start() {
+        new Thread(new GridRunnable()).start();
     }
 
     public void calculateGhostPiece() {
@@ -113,6 +141,18 @@ public class Grid extends Observable implements ActionListener {
         currentPiece.setPos(3, 0);
         ghostPiece = new Piece(currentPiece);
 
+        // verifie si game over
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (PieceGrid[i][j] != 0) {
+                    if (CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] != 0) {
+                        setChanged();
+                        notifyObservers("Game Over");
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     public boolean canDescend() {
@@ -130,18 +170,23 @@ public class Grid extends Observable implements ActionListener {
     }
 
     public void descendPiece() {
-        if (canDescend()) {
-            currentPiece.setPos(currentPiece.getPos()[0], currentPiece.getPos()[1] + 1);
-        } else {
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    if (PieceGrid[i][j] != 0) {
-                        CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] = PieceGrid[i][j];
-                        PieceGrid[i][j] = 0;
+        if(descendingSpeed != 5){
+            descendingSpeed++;
+        }else{
+            if (canDescend()) {
+                currentPiece.setPos(currentPiece.getPos()[0], currentPiece.getPos()[1] + 1);
+            } else {
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        if (PieceGrid[i][j] != 0) {
+                            CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] = PieceGrid[i][j];
+                            PieceGrid[i][j] = 0;
+                        }
                     }
                 }
+                createNewPiece();
             }
-            createNewPiece();
+            descendingSpeed = 0;
         }
     }
 
@@ -207,7 +252,6 @@ public class Grid extends Observable implements ActionListener {
     }
 
     public boolean suppriLigne() {
-
         // supprime les lignes complètes (ligne et colonne inversé)
 
         boolean complete = false;
@@ -273,7 +317,6 @@ public class Grid extends Observable implements ActionListener {
         if (canMove) {
             currentPiece.setPos(currentPiece.getPos()[0] + 1, currentPiece.getPos()[1]);
         }
-
     }
 
     public void rotatePiece() {

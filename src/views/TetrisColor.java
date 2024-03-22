@@ -10,7 +10,8 @@ public enum TetrisColor {
     Z(Color.RED, 5),
     J(Color.BLUE, 6),
     L(Color.ORANGE, 7),
-    EMPTY(new Color(47, 39, 41), 0); //47, 39, 41
+    EMPTY(new Color(47, 39, 41), 0), //47, 39, 41
+    GHOST(new Color(250, 250, 250, 100), 8);
 
     private Color color;
     private int value;

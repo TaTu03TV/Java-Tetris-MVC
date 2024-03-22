@@ -10,7 +10,7 @@ public class Grid extends Observable {
     private int[][] CurrentGrid;
     private Piece currentPiece;
     private Piece ghostPiece;
-    private int ghostColor = 3; // or any other distinct color
+    private int ghostColor = 8; // or any other distinct color
     private int score;
     private int descendingSpeed;
 

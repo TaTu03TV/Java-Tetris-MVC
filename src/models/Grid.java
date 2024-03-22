@@ -1,13 +1,9 @@
 package models;
 
-import java.awt.DisplayMode;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Time;
 import java.util.Observable;
-import java.util.Random;
 
-public class Grid extends Observable implements ActionListener {
+
+public class Grid extends Observable {
 
     private int[][] DisplayGrid;
     private int[][] PieceGrid;
@@ -48,19 +44,48 @@ public class Grid extends Observable implements ActionListener {
 
         createNewPiece();
 
-        // initialisation de la grille courante
-
-        CurrentGrid[9][19] = 1;
-        CurrentGrid[8][19] = 1;
-        CurrentGrid[7][19] = 1;
-        CurrentGrid[6][19] = 1;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("Grid actionPerformed");
-        updateGrid();
-        setChanged();
-        notifyObservers();
+    public void reset(){
+        score = 0;
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 20; j++) {
+                DisplayGrid[i][j] = 0;
+                CurrentGrid[i][j] = 0;
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                PieceGrid[i][j] = 0;
+            }
+        }
+
+        createNewPiece();
+    }
+
+    private class GridRunnable implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(350);
+                    
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            
+                System.out.println("Grid actionPerformed");
+                updateGrid();
+                // printGrid(DisplayGrid);
+                setChanged();
+                notifyObservers();
+            }
+        }
+    }
+
+    public void start() {
+        new Thread(new GridRunnable()).start();
     }
 
     public int[][] returnGrid() {
@@ -92,6 +117,18 @@ public class Grid extends Observable implements ActionListener {
         currentPiece = Piece.placeRandomPiece(PieceGrid);
         currentPiece.setPos(3, 0);
 
+        // verifie si game over
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (PieceGrid[i][j] != 0) {
+                    if (CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] != 0) {
+                        setChanged();
+                        notifyObservers("Game Over");
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     public boolean canDescend() {
@@ -173,7 +210,6 @@ public class Grid extends Observable implements ActionListener {
     }
 
     public boolean suppriLigne() {
-
         // supprime les lignes complètes (ligne et colonne inversé)
 
         boolean complete = false;
@@ -239,7 +275,6 @@ public class Grid extends Observable implements ActionListener {
         if (canMove) {
             currentPiece.setPos(currentPiece.getPos()[0] + 1, currentPiece.getPos()[1]);
         }
-
     }
 
     public void rotatePiece(){

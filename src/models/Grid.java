@@ -10,6 +10,7 @@ public class Grid extends Observable {
     private int[][] CurrentGrid;
     private Piece currentPiece;
     private int score;
+    private int descendingSpeed;
 
     public Grid() {
         System.out.println("Grid");
@@ -19,6 +20,8 @@ public class Grid extends Observable {
         DisplayGrid = new int[10][20];
         PieceGrid = new int[4][4];
         CurrentGrid = new int[10][20];
+
+        descendingSpeed = 0;
 
         score = 0;
 
@@ -69,7 +72,7 @@ public class Grid extends Observable {
         public void run() {
             while (true) {
                 try {
-                    Thread.sleep(350);
+                    Thread.sleep(75);
                     
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -146,18 +149,23 @@ public class Grid extends Observable {
     }
 
     public void descendPiece() {
-        if (canDescend()) {
-            currentPiece.setPos(currentPiece.getPos()[0], currentPiece.getPos()[1] + 1);
-        } else {
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    if (PieceGrid[i][j] != 0) {
-                        CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] = PieceGrid[i][j];
-                        PieceGrid[i][j] = 0;
+        if(descendingSpeed != 5){
+            descendingSpeed++;
+        }else{
+            if (canDescend()) {
+                currentPiece.setPos(currentPiece.getPos()[0], currentPiece.getPos()[1] + 1);
+            } else {
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        if (PieceGrid[i][j] != 0) {
+                            CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] = PieceGrid[i][j];
+                            PieceGrid[i][j] = 0;
+                        }
                     }
                 }
+                createNewPiece();
             }
-            createNewPiece();
+            descendingSpeed = 0;
         }
     }
     public void fusionGrid() {

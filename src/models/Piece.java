@@ -16,12 +16,24 @@ public class Piece {
         this.ypos = ypos;
     }
 
+
     public Piece(Piece other) { //constructeur par copie
         this.shape = other.shape;
         this.color = other.color;
         this.xpos = other.xpos;
         this.ypos = other.ypos;
     }
+
+    public Piece getRandomPiece() {
+        PieceShape[] shapes = PieceShape.values();
+        PieceShape randomShape = shapes[new Random().nextInt(shapes.length)];
+        return new Piece(randomShape, 5, 0);
+    }
+
+    public Piece Piece(){
+        return getRandomPiece();
+    }
+
 
     public int[][] getShape() {
         return this.shape.getShape();
@@ -67,5 +79,7 @@ public class Piece {
     
         return randomPiece;
     }
+
+    
 }
 

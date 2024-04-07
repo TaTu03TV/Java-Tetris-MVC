@@ -8,7 +8,7 @@ public class Grid extends Observable {
     private int[][] DisplayGrid;
     private int[][] PieceGrid;
     private int[][] CurrentGrid;
-    private Piece currentPiece;
+    private Piece[] PieceList; // Initialize PieceList array
     private Piece ghostPiece;
     private int ghostColor = 8; // or any other distinct color
     private int score;
@@ -16,6 +16,10 @@ public class Grid extends Observable {
 
     public Grid() {
         System.out.println("Grid");
+        PieceList = new Piece[2]; // or any desired size
+        //we add 2 pieces to the list
+        
+
 
         // initialisation des grilles
 
@@ -45,7 +49,10 @@ public class Grid extends Observable {
 
         // initialisation de la piece
 
+        PieceList[0] = Piece.placeRandomPiece(PieceGrid);
+        PieceList[1] = Piece.placeRandomPiece(PieceGrid);
         createNewPiece();
+
 
     }
 
@@ -92,7 +99,7 @@ public class Grid extends Observable {
     }
 
     public void calculateGhostPiece() {
-        ghostPiece = new Piece(currentPiece);
+        ghostPiece = new Piece(PieceList[0]);
         while (canDescend(ghostPiece)) {
             ghostPiece.setPos(ghostPiece.getPos()[0], ghostPiece.getPos()[1] + 1);
         }
@@ -126,8 +133,6 @@ public class Grid extends Observable {
         descendPiece();
         printGrid(PieceGrid);
 
-        System.out.println("Pos x: " + currentPiece.getPos()[0] + " Pos y: " + currentPiece.getPos()[1]);
-
         fusionGrid();
         calculateGhostPiece();
         if (suppriLigne()) {
@@ -137,15 +142,26 @@ public class Grid extends Observable {
     }
 
     public void createNewPiece() {
-        currentPiece = Piece.placeRandomPiece(PieceGrid);
-        currentPiece.setPos(3, 0);
-        ghostPiece = new Piece(currentPiece);
+        
 
-        // verifie si game over
+
+
+        PieceList[0] = PieceList[1];
+
+        //TODO:
+        // Create a new random piece and put it in the second posit
+        PieceList[1] = Piece.placeRandomPiece(PieceGrid);
+
+
+
+        PieceList[0].setPos(3, 0);
+        ghostPiece = new Piece(PieceList[0]);
+
+        // Check if game over
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
-                    if (CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] != 0) {
+                    if (CurrentGrid[i + PieceList[0].getPos()[0]][j + PieceList[0].getPos()[1]] != 0) {
                         setChanged();
                         notifyObservers("Game Over");
                         return;
@@ -154,13 +170,12 @@ public class Grid extends Observable {
             }
         }
     }
-
     public boolean canDescend() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
-                    int newY = currentPiece.getPos()[1] + j + 1;
-                    if (newY >= 20 || CurrentGrid[currentPiece.getPos()[0] + i][newY] != 0) {
+                    int newY = PieceList[0].getPos()[1] + j + 1;
+                    if (newY >= 20 || CurrentGrid[PieceList[0].getPos()[0] + i][newY] != 0) {
                         return false;
                     }
                 }
@@ -174,12 +189,12 @@ public class Grid extends Observable {
             descendingSpeed++;
         }else{
             if (canDescend()) {
-                currentPiece.setPos(currentPiece.getPos()[0], currentPiece.getPos()[1] + 1);
+                PieceList[0].setPos(PieceList[0].getPos()[0], PieceList[0].getPos()[1] + 1);
             } else {
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 4; j++) {
                         if (PieceGrid[i][j] != 0) {
-                            CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] = PieceGrid[i][j];
+                            CurrentGrid[i + PieceList[0].getPos()[0]][j + PieceList[0].getPos()[1]] = PieceGrid[i][j];
                             PieceGrid[i][j] = 0;
                         }
                     }
@@ -191,8 +206,8 @@ public class Grid extends Observable {
     }
 
     public void fusionGrid() {
-        int xPos = currentPiece.getPos()[0];
-        int yPos = currentPiece.getPos()[1];
+        int xPos = PieceList[0].getPos()[0];
+        int yPos = PieceList[0].getPos()[1];
 
         // Draw the ghostPiece with a different color
         for (int i = 0; i < 4; i++) {
@@ -282,8 +297,8 @@ public class Grid extends Observable {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
-                    int newX = currentPiece.getPos()[0] + i - 1;
-                    if (newX < 0 || CurrentGrid[newX][currentPiece.getPos()[1] + j] != 0) {
+                    int newX = PieceList[0].getPos()[0] + i - 1;
+                    if (newX < 0 || CurrentGrid[newX][PieceList[0].getPos()[1] + j] != 0) {
                         canMove = false;
                         break;
                     }
@@ -294,7 +309,7 @@ public class Grid extends Observable {
             }
         }
         if (canMove) {
-            currentPiece.setPos(currentPiece.getPos()[0] - 1, currentPiece.getPos()[1]);
+            PieceList[0].setPos(PieceList[0].getPos()[0] - 1, PieceList[0].getPos()[1]);
         }
     }
 
@@ -303,8 +318,8 @@ public class Grid extends Observable {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
-                    int newX = currentPiece.getPos()[0] + i + 1;
-                    if (newX >= 10 || CurrentGrid[newX][currentPiece.getPos()[1] + j] != 0) {
+                    int newX = PieceList[0].getPos()[0] + i + 1;
+                    if (newX >= 10 || CurrentGrid[newX][PieceList[0].getPos()[1] + j] != 0) {
                         canMove = false;
                         break;
                     }
@@ -315,7 +330,7 @@ public class Grid extends Observable {
             }
         }
         if (canMove) {
-            currentPiece.setPos(currentPiece.getPos()[0] + 1, currentPiece.getPos()[1]);
+            PieceList[0].setPos(PieceList[0].getPos()[0] + 1, PieceList[0].getPos()[1]);
         }
     }
 
@@ -339,8 +354,8 @@ public class Grid extends Observable {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (newPieceGrid[i][j] != 0) {
-                    int newX = currentPiece.getPos()[0] + i;
-                    int newY = currentPiece.getPos()[1] + j;
+                    int newX = PieceList[0].getPos()[0] + i;
+                    int newY = PieceList[0].getPos()[1] + j;
                     if (newX < 0 || newX >= 10 || newY >= 20 || CurrentGrid[newX][newY] != 0) {
                         return false;
                     }

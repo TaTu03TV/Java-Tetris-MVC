@@ -93,6 +93,7 @@ public class MainBoard extends JPanel implements Observer{
         super.paintComponent(g);
         g.drawImage(backgroundImage, -10, 0, this);
         drawGrid(currentGrid.returnGrid(), g);
+        drawNextPiece(currentGrid.returnNextPiece(), g);
     }
 
     public void start() {
@@ -166,4 +167,19 @@ public class MainBoard extends JPanel implements Observer{
         g.fillRect(10, 140, 400, 800);
     }
 
+    public void drawNextPiece(int[][] grid, Graphics g) {
+        // clear le pannel
+        g.setColor(new Color(47, 39, 41));
+        g.fillRect(440, 300, 160, 160);
+        
+        // affiche des carré de couleur rouge où grid contient 1
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == 1) {
+                    g.setColor(TetrisColor.getColorByValue(grid[i][j]).getColor());
+                    g.fillRect(440 + i * 40, 300 + j * 40, 40, 40); // décalé de 10px à gauche et 30px vers le haut
+                }
+            }
+        }
+    }
 }

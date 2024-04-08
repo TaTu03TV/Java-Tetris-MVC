@@ -138,7 +138,7 @@ public class Grid extends Observable {
         if (suppriLigne()) {
             fusionGrid();
         }
-
+        System.out.println("The next piece is: " + PieceList[1].getShape());
     }
 
     public void createNewPiece() {
@@ -265,6 +265,13 @@ public class Grid extends Observable {
     public int[][] getPieceGrid() {
         return PieceGrid;
     }
+
+    public int[][] returnNextPiece() {
+        return PieceList[1].getShape();
+    }
+
+
+
 
     public boolean suppriLigne() {
         // supprime les lignes complètes (ligne et colonne inversé)

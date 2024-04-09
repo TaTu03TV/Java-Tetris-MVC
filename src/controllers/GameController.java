@@ -15,28 +15,33 @@ public class GameController {
         board.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyChar() == 'q') {
-                    grid.movePieceHorizontally(false);
+
+                if (e.getKeyChar() == 'q' || e.getKeyChar() == 'Q') {
+                    grid.movePieceLeft();
                 }
-                if (e.getKeyChar() == 'd') {
-                    grid.movePieceHorizontally(true);
+                if (e.getKeyChar() == 'd' || e.getKeyChar() == 'D') {
+                    grid.movePieceRight();
+
                 }
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     while (grid.canDescend()) {
                         grid.descendPiece();
                     }
                 }
-                if(e.getKeyChar() == 's'){
+                if(e.getKeyChar() == 's' || e.getKeyChar() == 'S'){
                     if(grid.canDescend()){
                         grid.descendPiece();
                     }
                 }
-                if(e.getKeyChar() == 'z'){
+                if(e.getKeyChar() == 'z' || e.getKeyChar() == 'Z'){
                     if(grid.canRotate()){
                         grid.rotatePiece();
                     }
-                }if(e.getKeyChar() == 'p'){
+                }if(e.getKeyChar() == 'p' || e.getKeyChar() == 'P'){
                     grid.pause();
+                }
+                if (e.getKeyChar() == 'h' || e.getKeyChar() == 'H') {
+                    grid.holdPiece();
                 }
             } 
         });

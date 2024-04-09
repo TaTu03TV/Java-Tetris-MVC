@@ -16,6 +16,7 @@ public class Grid extends Observable {
     private int[][] CurrentGrid;
     private Piece[] PieceList; // Initialize PieceList array
     private Piece ghostPiece;
+    private Piece holdPiece;
     private int ghostColor = 8; // or any other distinct color
     private int score;
     private int descendingSpeed;
@@ -88,11 +89,9 @@ public class Grid extends Observable {
                     e.printStackTrace();
                 }
 
-                System.out.println("Grid actionPerformed");
                 if(!paused){
                     updateGrid();
                 }
-                
                 setChanged();
                 notifyObservers();
             }
@@ -146,7 +145,6 @@ public class Grid extends Observable {
         if (suppriLigne()) {
             fusionGrid();
         }
-        System.out.println("The next piece is: " + PieceList[1].getShape());
     }
 
     public void createNewPiece() {
@@ -163,13 +161,10 @@ public class Grid extends Observable {
 
         PieceList[0].setPos(3, 0);
         ghostPiece = new Piece(PieceList[0]);
-
-        // Check if game over
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
                     if (CurrentGrid[i + PieceList[0].getPos()[0]][j + PieceList[0].getPos()[1]] != 0) {
-
                         gameover();
 
                         return;
@@ -178,6 +173,32 @@ public class Grid extends Observable {
             }
         }
     }
+
+
+    public void holdPiece() {
+        if (holdPiece == null) {
+            holdPiece = new Piece(PieceList[0]);
+            holdPiece.setPos(3, 0);
+            erasePieceGrid(PieceList[0]);
+            createNewPiece();
+        } else {
+            Piece temp = new Piece(PieceList[0]);
+            erasePieceGrid(PieceList[0]);
+            PieceList[0] = new Piece(holdPiece);
+            addToPieceGrid(PieceList[0]);
+            holdPiece = temp;
+            holdPiece.setPos(3, 0);
+        }
+    }
+
+    public void erasePieceGrid(Piece piece) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                PieceGrid[i][j] = 0;
+            }
+        }
+    }
+
 
     private void gameover() {
         // Game over
@@ -219,7 +240,6 @@ public class Grid extends Observable {
         setChanged();
         notifyObservers("Game Over");
     }
-
 
     private void addToPieceGrid(Piece piece) {
         for (int i = 0; i < 4; i++) {
@@ -300,7 +320,6 @@ public class Grid extends Observable {
                 }
             }
         }
-        System.out.println("FusionGrid");
     }
 
     public void clearDisplayGrid() {
@@ -312,24 +331,16 @@ public class Grid extends Observable {
         }
     }
 
-    public void printGrid(int[][] grid) {
-        int w = grid.length;
-        int h = grid[0].length;
-
-        for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
-                System.out.print(grid[j][i]);
-            }
-            System.out.println();
-        }
-    }
-
     public int[][] getPieceGrid() {
         return PieceGrid;
     }
 
     public Piece returnNextPiece() {
         return PieceList[1];
+    }
+
+    public Piece returnHoldPiece() {
+        return holdPiece;
     }
 
     public boolean suppriLigne() {

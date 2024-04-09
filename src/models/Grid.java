@@ -255,6 +255,7 @@ public class Grid extends Observable {
         // supprime les lignes complètes (ligne et colonne inversé)
 
         boolean complete = false;
+        int linesRemoved = 0;
         for (int j = 19; j >= 0; j--) {
             complete = true;
             for (int i = 0; i < 10; i++) {
@@ -264,7 +265,7 @@ public class Grid extends Observable {
             }
             if (complete) {
                 System.out.println("ligne complète");
-                score += 1;
+                linesRemoved += 1;
                 for (int k = j; k > 0; k--) {
                     for (int i = 0; i < 10; i++) {
                         CurrentGrid[i][k] = CurrentGrid[i][k - 1];
@@ -273,8 +274,24 @@ public class Grid extends Observable {
                 j++;
             }
         }
-        return complete;
 
+        // Mettre à jour le score en fonction du nombre de lignes supprimées
+        switch (linesRemoved) {
+            case 1:
+                score += 40;
+                break;
+            case 2:
+                score += 100;
+                break;
+            case 3:
+                score += 300;
+                break;
+            case 4:
+                score += 1200;
+                break;
+        }
+
+        return complete;
     }
 
     public void movePieceLeft() {

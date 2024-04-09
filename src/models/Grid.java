@@ -49,6 +49,9 @@ public class Grid extends Observable {
         // initialisation de la piece
 
         createNewPiece();
+        
+        soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
+        soundPlayer.setLoop(true);
 
     }
 

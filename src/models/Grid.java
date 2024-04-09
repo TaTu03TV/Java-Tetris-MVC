@@ -2,7 +2,6 @@ package models;
 
 import java.util.Observable;
 
-
 public class Grid extends Observable {
 
     private int[][] DisplayGrid;
@@ -17,9 +16,7 @@ public class Grid extends Observable {
     public Grid() {
         System.out.println("Grid");
         PieceList = new Piece[2]; // or any desired size
-        //we add 2 pieces to the list
-        
-
+        // we add 2 pieces to the list
 
         // initialisation des grilles
 
@@ -46,17 +43,11 @@ public class Grid extends Observable {
 
         // for debug we print the grid
         printGrid(PieceGrid);
-
-        // initialisation de la piece
-
-        PieceList[0] = Piece.placeRandomPiece(PieceGrid);
-        PieceList[1] = Piece.placeRandomPiece(PieceGrid);
         createNewPiece();
-
 
     }
 
-    public void reset(){
+    public void reset() {
         score = 0;
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 20; j++) {
@@ -80,11 +71,11 @@ public class Grid extends Observable {
             while (true) {
                 try {
                     Thread.sleep(75);
-                    
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            
+
                 System.out.println("Grid actionPerformed");
                 updateGrid();
                 // printGrid(DisplayGrid);
@@ -142,17 +133,16 @@ public class Grid extends Observable {
     }
 
     public void createNewPiece() {
-        
-
-
-
-        PieceList[0] = PieceList[1];
-
-        //TODO:
-        // Create a new random piece and put it in the second posit
-        PieceList[1] = Piece.placeRandomPiece(PieceGrid);
-
-
+        // we check if the array is empty
+        if (PieceList[1] == null || PieceList[0] == null) {
+            PieceList[0] = Piece.placeRandomPiece(PieceGrid, true);
+            addToPieceGrid(PieceList[0]);
+            PieceList[1] = Piece.placeRandomPiece(PieceGrid, false);
+        } else {
+            PieceList[0] = PieceList[1];
+            addToPieceGrid(PieceList[0]);
+            PieceList[1] = Piece.placeRandomPiece(PieceGrid, false);
+        }
 
         PieceList[0].setPos(3, 0);
         ghostPiece = new Piece(PieceList[0]);
@@ -170,6 +160,18 @@ public class Grid extends Observable {
             }
         }
     }
+
+    private void addToPieceGrid(Piece piece) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (piece.getShape()[i][j] != 0) {
+                    PieceGrid[i][j] = piece.getColor();
+                }
+            }
+        }
+        
+    }
+
     public boolean canDescend() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -185,9 +187,9 @@ public class Grid extends Observable {
     }
 
     public void descendPiece() {
-        if(descendingSpeed != 5){
+        if (descendingSpeed != 5) {
             descendingSpeed++;
-        }else{
+        } else {
             if (canDescend()) {
                 PieceList[0].setPos(PieceList[0].getPos()[0], PieceList[0].getPos()[1] + 1);
             } else {
@@ -266,12 +268,9 @@ public class Grid extends Observable {
         return PieceGrid;
     }
 
-    public int[][] returnNextPiece() {
-        return PieceList[1].getShape();
+    public Piece returnNextPiece() {
+        return PieceList[1];
     }
-
-
-
 
     public boolean suppriLigne() {
         // supprime les lignes complètes (ligne et colonne inversé)

@@ -15,11 +15,13 @@ public class GameController {
         board.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+
                 if (e.getKeyChar() == 'q' || e.getKeyChar() == 'Q') {
                     grid.movePieceLeft();
                 }
                 if (e.getKeyChar() == 'd' || e.getKeyChar() == 'D') {
                     grid.movePieceRight();
+
                 }
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     while (grid.canDescend()) {

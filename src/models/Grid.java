@@ -1,6 +1,11 @@
 package models;
 
 import java.util.Observable;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import java.io.File;
 
 public class Grid extends Observable {
 
@@ -160,15 +165,15 @@ public class Grid extends Observable {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
                     if (CurrentGrid[i + PieceList[0].getPos()[0]][j + PieceList[0].getPos()[1]] != 0) {
-                        soundPlayer.stop();
-                        setChanged();
-                        notifyObservers("Game Over");
+                        gameover();
+
                         return;
                     }
                 }
             }
         }
     }
+
 
     public void holdPiece() {
         if (holdPiece == null) {
@@ -192,6 +197,48 @@ public class Grid extends Observable {
                 PieceGrid[i][j] = 0;
             }
         }
+    }
+
+
+    private void gameover() {
+        // Game over
+        System.out.println("Game Over");
+    
+        soundPlayer.stop();
+    
+        // Save best score
+        try {
+            File file = new File("best-score.txt");
+            int bestScore = 0;
+    
+            // Read best score from file
+            if (file.exists()) {
+                try (Scanner scanner = new Scanner(file)) {
+                    if (scanner.hasNextInt()) {
+                        bestScore = scanner.nextInt();
+                    }
+                }
+            }
+    
+            // Compare best score with current score
+            if (score > bestScore) {
+                bestScore = score;
+    
+                // Save new best score
+                try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
+                    out.println(bestScore);
+                }
+            }
+            // Save score in Histo
+            try (PrintWriter out = new PrintWriter(new FileWriter("histo-score.txt", true))) {
+                out.println(score);
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving best score: " + e.getMessage());
+        }
+    
+        setChanged();
+        notifyObservers("Game Over");
     }
 
     private void addToPieceGrid(Piece piece) {
@@ -297,8 +344,6 @@ public class Grid extends Observable {
     }
 
     public boolean suppriLigne() {
-        // supprime les lignes complètes (ligne et colonne inversé)
-
         boolean complete = false;
         int linesRemoved = 0;
         for (int j = 19; j >= 0; j--) {
@@ -309,18 +354,12 @@ public class Grid extends Observable {
                 }
             }
             if (complete) {
-                System.out.println("ligne complète");
                 linesRemoved += 1;
-
-                if (soundPlayer == null) {
-                    System.out.println("soundPlayer is null");
-                } else {
-                    try {
-                        soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
-                        
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 for (int k = j; k > 0; k--) {
@@ -332,7 +371,6 @@ public class Grid extends Observable {
             }
         }
 
-        // Mettre à jour le score en fonction du nombre de lignes supprimées
         switch (linesRemoved) {
             case 1:
                 score += 40;
@@ -351,13 +389,14 @@ public class Grid extends Observable {
         return complete;
     }
 
-    public void movePieceLeft() {
+    public void movePieceHorizontally(boolean moveRight) {
         boolean canMove = true;
+        int direction = moveRight ? 1 : -1;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
-                    int newX = PieceList[0].getPos()[0] + i - 1;
-                    if (newX < 0 || CurrentGrid[newX][PieceList[0].getPos()[1] + j] != 0) {
+                    int newX = PieceList[0].getPos()[0] + i + direction;
+                    if (newX < 0 || newX >= 10 || CurrentGrid[newX][PieceList[0].getPos()[1] + j] != 0) {
                         canMove = false;
                         break;
                     }
@@ -368,28 +407,7 @@ public class Grid extends Observable {
             }
         }
         if (canMove) {
-            PieceList[0].setPos(PieceList[0].getPos()[0] - 1, PieceList[0].getPos()[1]);
-        }
-    }
-
-    public void movePieceRight() {
-        boolean canMove = true;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (PieceGrid[i][j] != 0) {
-                    int newX = PieceList[0].getPos()[0] + i + 1;
-                    if (newX >= 10 || CurrentGrid[newX][PieceList[0].getPos()[1] + j] != 0) {
-                        canMove = false;
-                        break;
-                    }
-                }
-            }
-            if (!canMove) {
-                break;
-            }
-        }
-        if (canMove) {
-            PieceList[0].setPos(PieceList[0].getPos()[0] + 1, PieceList[0].getPos()[1]);
+            PieceList[0].setPos(PieceList[0].getPos()[0] + direction, PieceList[0].getPos()[1]);
         }
     }
 

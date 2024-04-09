@@ -49,8 +49,6 @@ public class Grid extends Observable {
             }
         }
 
-        // for debug we print the grid
-        printGrid(PieceGrid);
         createNewPiece();
         
         soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
@@ -94,7 +92,7 @@ public class Grid extends Observable {
                 if(!paused){
                     updateGrid();
                 }
-                // printGrid(DisplayGrid);
+                
                 setChanged();
                 notifyObservers();
             }
@@ -142,7 +140,6 @@ public class Grid extends Observable {
         // descend toutes les lignes de 1
         clearDisplayGrid();
         descendPiece();
-        printGrid(PieceGrid);
 
         fusionGrid();
         calculateGhostPiece();
@@ -336,8 +333,6 @@ public class Grid extends Observable {
     }
 
     public boolean suppriLigne() {
-        // supprime les lignes complètes (ligne et colonne inversé)
-
         boolean complete = false;
         int linesRemoved = 0;
         for (int j = 19; j >= 0; j--) {
@@ -348,18 +343,12 @@ public class Grid extends Observable {
                 }
             }
             if (complete) {
-                System.out.println("ligne complète");
                 linesRemoved += 1;
-
-                if (soundPlayer == null) {
-                    System.out.println("soundPlayer is null");
-                } else {
-                    try {
-                        soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
-                        
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 for (int k = j; k > 0; k--) {
@@ -371,7 +360,6 @@ public class Grid extends Observable {
             }
         }
 
-        // Mettre à jour le score en fonction du nombre de lignes supprimées
         switch (linesRemoved) {
             case 1:
                 score += 40;
@@ -390,13 +378,14 @@ public class Grid extends Observable {
         return complete;
     }
 
-    public void movePieceLeft() {
+    public void movePieceHorizontally(boolean moveRight) {
         boolean canMove = true;
+        int direction = moveRight ? 1 : -1;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
-                    int newX = PieceList[0].getPos()[0] + i - 1;
-                    if (newX < 0 || CurrentGrid[newX][PieceList[0].getPos()[1] + j] != 0) {
+                    int newX = PieceList[0].getPos()[0] + i + direction;
+                    if (newX < 0 || newX >= 10 || CurrentGrid[newX][PieceList[0].getPos()[1] + j] != 0) {
                         canMove = false;
                         break;
                     }
@@ -407,28 +396,7 @@ public class Grid extends Observable {
             }
         }
         if (canMove) {
-            PieceList[0].setPos(PieceList[0].getPos()[0] - 1, PieceList[0].getPos()[1]);
-        }
-    }
-
-    public void movePieceRight() {
-        boolean canMove = true;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (PieceGrid[i][j] != 0) {
-                    int newX = PieceList[0].getPos()[0] + i + 1;
-                    if (newX >= 10 || CurrentGrid[newX][PieceList[0].getPos()[1] + j] != 0) {
-                        canMove = false;
-                        break;
-                    }
-                }
-            }
-            if (!canMove) {
-                break;
-            }
-        }
-        if (canMove) {
-            PieceList[0].setPos(PieceList[0].getPos()[0] + 1, PieceList[0].getPos()[1]);
+            PieceList[0].setPos(PieceList[0].getPos()[0] + direction, PieceList[0].getPos()[1]);
         }
     }
 

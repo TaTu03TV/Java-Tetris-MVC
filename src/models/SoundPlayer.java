@@ -45,4 +45,10 @@ public class SoundPlayer {
             }
         }
     }
+
+    public void stop() {
+        if (clip != null) {
+            clip.stop();
+        }
+    }
 }

@@ -14,14 +14,12 @@ import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
+import models.Piece;
 
 import controllers.GameController;
 import models.Grid;
 
-
-public class MainBoard extends JPanel implements Observer{
- 
+public class MainBoard extends JPanel implements Observer {
 
     private static GameController gameController;
     private static Grid currentGrid;
@@ -32,9 +30,9 @@ public class MainBoard extends JPanel implements Observer{
     private static JLabel HoldPiece;
     private static JLabel GameOver;
     private static Font font;
-    
+
     private Image backgroundImage;
-    
+
     public MainBoard() {
         setLayout(null);
 
@@ -46,7 +44,7 @@ public class MainBoard extends JPanel implements Observer{
         }
 
         try {
-        backgroundImage = ImageIO.read(new File("assets/Mockup/background.png"));
+            backgroundImage = ImageIO.read(new File("assets/Mockup/background.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,7 +86,6 @@ public class MainBoard extends JPanel implements Observer{
         add(GameOver);
         GameOver.setVisible(false);
 
-
         currentGrid = new Grid();
         currentGrid.addObserver(this);
         gameController = new GameController(currentGrid, this);
@@ -100,6 +97,7 @@ public class MainBoard extends JPanel implements Observer{
         super.paintComponent(g);
         g.drawImage(backgroundImage, -10, 0, this);
         drawGrid(currentGrid.returnGrid(), g);
+        drawNextPiece(currentGrid.returnNextPiece(), g);
     }
 
     public void start() {
@@ -109,20 +107,23 @@ public class MainBoard extends JPanel implements Observer{
 
     public void update(Observable o, Object arg) {
         System.out.println(arg);
-        if(arg == null && !GameOver.isVisible()) {
+        if (arg == null && !GameOver.isVisible()) {
             System.err.println("MainBoard update");
             repaint();
+
             Score.setText(""+ currentGrid.returnScore());
         }
         else{
             if(arg == "Game Over"){
                 System.out.println("Game Over");
-                if(!GameOver.isVisible()) clearDisplayGrid();
+                if (!GameOver.isVisible())
+                    clearDisplayGrid();
                 GameOver.setVisible(true);
 
                 // Affiche une boîte de dialogue
                 int response = JOptionPane.showOptionDialog(null, "Game Over. Que voulez-vous faire ?", "Game Over",
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[] { "Rejouer", "Quitter" }, "Rejouer");
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+                        new String[] { "Rejouer", "Quitter" }, "Rejouer");
 
                 if (response == 0) {
                     // Si l'utilisateur choisit "Rejouer", réinitialisez le jeu
@@ -133,8 +134,7 @@ public class MainBoard extends JPanel implements Observer{
                     System.out.println("Quitter");
                     System.exit(0);
                 }
-            }
-            else{
+            } else {
                 System.err.println("error obervation arg not recognized");
             }
         }
@@ -151,15 +151,14 @@ public class MainBoard extends JPanel implements Observer{
         // clear le pannel
         g.setColor(new Color(47, 39, 41));
         g.fillRect(10, 140, 400, 800);
-        
+
         // affiche des carré de couleur rouge où grid contient 1
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j] == 1) {
                     g.setColor(TetrisColor.getColorByValue(grid[i][j]).getColor());
                     g.fillRect(10 + i * 40, 140 + j * 40, 40, 40); // décalé de 10px à gauche et 30px vers le haut
-                }
-                else {
+                } else {
                     g.setColor(TetrisColor.getColorByValue(grid[i][j]).getColor());
                     g.fillRect(10 + i * 40, 140 + j * 40, 40, 40); // décalé de 10px à gauche et 30px vers le haut
                 }
@@ -173,4 +172,18 @@ public class MainBoard extends JPanel implements Observer{
         g.fillRect(10, 140, 400, 800);
     }
 
+    public void drawNextPiece(Piece p, Graphics g) {
+        int[][] shape = p.getShape();
+        int[] pos = p.getPos();
+        int blocSize = 30;
+        int color = p.getColor();
+        for (int i = 0; i < shape.length; i++) {
+            for (int j = 0; j < shape[i].length; j++) {
+                if (shape[i][j] == 1) {
+                    g.setColor(TetrisColor.getColorByValue(color).getColor());
+                    g.fillRect(445 + i * blocSize, 300 + j * blocSize, blocSize, blocSize);
+                }
+            }
+        }
+    }
 }

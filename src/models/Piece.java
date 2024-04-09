@@ -11,10 +11,11 @@ public class Piece {
 
     public Piece(PieceShape shape, int xpos, int ypos) {
         this.shape = shape;
-        this.color = 0;
+        this.color = shape.getColor();
         this.xpos = xpos;
         this.ypos = ypos;
     }
+
 
     public Piece(Piece other) { //constructeur par copie
         this.shape = other.shape;
@@ -22,6 +23,17 @@ public class Piece {
         this.xpos = other.xpos;
         this.ypos = other.ypos;
     }
+
+    public Piece getRandomPiece() {
+        PieceShape[] shapes = PieceShape.values();
+        PieceShape randomShape = shapes[new Random().nextInt(shapes.length)];
+        return new Piece(randomShape, 5, 0);
+    }
+
+    public Piece Piece(){
+        return getRandomPiece();
+    }
+
 
     public int[][] getShape() {
         return this.shape.getShape();
@@ -45,26 +57,12 @@ public class Piece {
         this.ypos = y;
     }
 
-    public static Piece placeRandomPiece(int[][] PieceGrid) {
+    public static Piece placeRandomPiece(int[][] PieceGrid, boolean render) {
         PieceShape[] shapes = PieceShape.values();
         PieceShape randomShape = shapes[new Random().nextInt(shapes.length)];
-
-
-        // Create a new piece with the random shape
+    
+        // Create a new piece with the random shape and its color
         Piece randomPiece = new Piece(randomShape, 5, 0);
-        randomPiece.setColor(randomShape.getColor());
-    
-        // Place the piece at the middle of the grid
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (randomPiece.getShape()[i][j] != 0) {
-
-                    PieceGrid[i][j] = randomPiece.getColor();
-
-                }
-            }
-        }
-    
         return randomPiece;
     }
 }

@@ -5,6 +5,8 @@ import java.util.Observable;
 
 public class Grid extends Observable {
 
+    private SoundPlayer soundPlayer = new SoundPlayer();
+
     private int[][] DisplayGrid;
     private int[][] PieceGrid;
     private int[][] CurrentGrid;
@@ -273,6 +275,18 @@ public class Grid extends Observable {
             if (complete) {
                 System.out.println("ligne complète");
                 linesRemoved += 1;
+
+                if (soundPlayer == null) {
+                    System.out.println("soundPlayer is null");
+                } else {
+                    try {
+                        soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
+                        
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 for (int k = j; k > 0; k--) {
                     for (int i = 0; i < 10; i++) {
                         CurrentGrid[i][k] = CurrentGrid[i][k - 1];

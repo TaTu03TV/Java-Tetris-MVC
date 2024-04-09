@@ -175,13 +175,29 @@ public class Grid extends Observable {
 
     public void holdPiece() {
         if (holdPiece == null) {
+            System.err.println("holdPiece is null");
             holdPiece = new Piece(PieceList[0]);
+            //we remove the piece from the grid
+            erasePieceGrid(PieceList[0]);
+            
+            System.err.println("Now holdPiece is: " + holdPiece.getShape());
             createNewPiece();
         } else {
+            System.err.println("HoldPiece is: " + holdPiece.getShape());
             Piece temp = new Piece(PieceList[0]);
             PieceList[0] = holdPiece;
             holdPiece = temp;
             holdPiece.setPos(3, 0);
+        }
+    }
+
+    public void erasePieceGrid(Piece piece) {
+        int[][] shape = piece.getShape();
+        int[] pos = piece.getPos();
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                PieceGrid[i][j] = 0;
+            }
         }
     }
 
@@ -281,6 +297,10 @@ public class Grid extends Observable {
 
     public Piece returnNextPiece() {
         return PieceList[1];
+    }
+
+    public Piece returnHoldPiece() {
+        return holdPiece;
     }
 
     public boolean suppriLigne() {

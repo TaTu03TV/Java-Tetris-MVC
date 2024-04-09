@@ -98,6 +98,7 @@ public class MainBoard extends JPanel implements Observer {
         g.drawImage(backgroundImage, -10, 0, this);
         drawGrid(currentGrid.returnGrid(), g);
         drawNextPiece(currentGrid.returnNextPiece(), g);
+        drawHoldPiece(currentGrid.returnHoldPiece(), g);
     }
 
     public void start() {
@@ -109,10 +110,9 @@ public class MainBoard extends JPanel implements Observer {
         if (arg == null && !GameOver.isVisible()) {
             repaint();
 
-            Score.setText(""+ currentGrid.returnScore());
-        }
-        else{
-            if(arg == "Game Over"){
+            Score.setText("" + currentGrid.returnScore());
+        } else {
+            if (arg == "Game Over") {
                 System.out.println("Game Over");
                 if (!GameOver.isVisible())
                     clearDisplayGrid();
@@ -184,4 +184,22 @@ public class MainBoard extends JPanel implements Observer {
             }
         }
     }
+
+    public void drawHoldPiece(Piece p, Graphics g) {
+        if (p != null) {
+            int[][] shape = p.getShape();
+            int[] pos = p.getPos();
+            int blocSize = 30;
+            int color = p.getColor();
+            for (int i = 0; i < shape.length; i++) {
+                for (int j = 0; j < shape[i].length; j++) {
+                    if (shape[i][j] == 1) {
+                        g.setColor(TetrisColor.getColorByValue(color).getColor());
+                        g.fillRect(445 + i * blocSize, 480 + j * blocSize, blocSize, blocSize);
+                    }
+                }
+            }
+        }
+    }
+
 }

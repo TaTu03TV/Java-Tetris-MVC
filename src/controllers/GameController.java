@@ -17,10 +17,10 @@ public class GameController {
             public void keyPressed(KeyEvent e) {
 
                 if (e.getKeyChar() == 'q' || e.getKeyChar() == 'Q') {
-                    grid.movePieceLeft();
+                    grid.movePieceHorizontally(false);
                 }
                 if (e.getKeyChar() == 'd' || e.getKeyChar() == 'D') {
-                    grid.movePieceRight();
+                    grid.movePieceHorizontally(true);
 
                 }
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {

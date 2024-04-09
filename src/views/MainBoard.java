@@ -106,9 +106,7 @@ public class MainBoard extends JPanel implements Observer {
     }
 
     public void update(Observable o, Object arg) {
-        System.out.println(arg);
         if (arg == null && !GameOver.isVisible()) {
-            System.err.println("MainBoard update");
             repaint();
 
             Score.setText(""+ currentGrid.returnScore());

@@ -11,6 +11,7 @@ public class Grid extends Observable {
     private int[][] CurrentGrid;
     private Piece[] PieceList; // Initialize PieceList array
     private Piece ghostPiece;
+    private Piece holdPiece;
     private int ghostColor = 8; // or any other distinct color
     private int score;
     private int descendingSpeed;
@@ -44,8 +45,6 @@ public class Grid extends Observable {
             }
         }
 
-        // for debug we print the grid
-        printGrid(PieceGrid);
         createNewPiece();
         
         soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
@@ -85,11 +84,9 @@ public class Grid extends Observable {
                     e.printStackTrace();
                 }
 
-                System.out.println("Grid actionPerformed");
                 if(!paused){
                     updateGrid();
                 }
-                // printGrid(DisplayGrid);
                 setChanged();
                 notifyObservers();
             }
@@ -137,14 +134,12 @@ public class Grid extends Observable {
         // descend toutes les lignes de 1
         clearDisplayGrid();
         descendPiece();
-        printGrid(PieceGrid);
 
         fusionGrid();
         calculateGhostPiece();
         if (suppriLigne()) {
             fusionGrid();
         }
-        System.out.println("The next piece is: " + PieceList[1].getShape());
     }
 
     public void createNewPiece() {
@@ -175,6 +170,18 @@ public class Grid extends Observable {
                     }
                 }
             }
+        }
+    }
+
+    public void holdPiece() {
+        if (holdPiece == null) {
+            holdPiece = new Piece(PieceList[0]);
+            createNewPiece();
+        } else {
+            Piece temp = new Piece(PieceList[0]);
+            PieceList[0] = holdPiece;
+            holdPiece = temp;
+            holdPiece.setPos(3, 0);
         }
     }
 
@@ -257,7 +264,6 @@ public class Grid extends Observable {
                 }
             }
         }
-        System.out.println("FusionGrid");
     }
 
     public void clearDisplayGrid() {
@@ -266,18 +272,6 @@ public class Grid extends Observable {
             for (int j = 0; j < 20; j++) {
                 DisplayGrid[i][j] = 0;
             }
-        }
-    }
-
-    public void printGrid(int[][] grid) {
-        int w = grid.length;
-        int h = grid[0].length;
-
-        for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
-                System.out.print(grid[j][i]);
-            }
-            System.out.println();
         }
     }
 

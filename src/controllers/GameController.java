@@ -38,6 +38,9 @@ public class GameController {
                 }if(e.getKeyChar() == 'p' || e.getKeyChar() == 'P'){
                     grid.pause();
                 }
+                if (e.getKeyChar() == 'h' || e.getKeyChar() == 'H') {
+                    grid.holdPiece();
+                }
             } 
         });
         board.setFocusable(true);

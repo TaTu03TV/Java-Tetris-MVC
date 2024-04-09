@@ -1,6 +1,11 @@
 package models;
 
 import java.util.Observable;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import java.io.File;
 
 public class Grid extends Observable {
 
@@ -167,9 +172,8 @@ public class Grid extends Observable {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
                     if (CurrentGrid[i + PieceList[0].getPos()[0]][j + PieceList[0].getPos()[1]] != 0) {
-                        soundPlayer.stop();
-                        setChanged();
-                        notifyObservers("Game Over");
+
+                        gameover();
 
                         return;
                     }
@@ -177,6 +181,48 @@ public class Grid extends Observable {
             }
         }
     }
+
+    private void gameover() {
+        // Game over
+        System.out.println("Game Over");
+    
+        soundPlayer.stop();
+    
+        // Save best score
+        try {
+            File file = new File("best-score.txt");
+            int bestScore = 0;
+    
+            // Read best score from file
+            if (file.exists()) {
+                try (Scanner scanner = new Scanner(file)) {
+                    if (scanner.hasNextInt()) {
+                        bestScore = scanner.nextInt();
+                    }
+                }
+            }
+    
+            // Compare best score with current score
+            if (score > bestScore) {
+                bestScore = score;
+    
+                // Save new best score
+                try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
+                    out.println(bestScore);
+                }
+            }
+            // Save score in Histo
+            try (PrintWriter out = new PrintWriter(new FileWriter("histo-score.txt", true))) {
+                out.println(score);
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving best score: " + e.getMessage());
+        }
+    
+        setChanged();
+        notifyObservers("Game Over");
+    }
+
 
     private void addToPieceGrid(Piece piece) {
         for (int i = 0; i < 4; i++) {

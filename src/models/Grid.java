@@ -71,6 +71,9 @@ public class Grid extends Observable {
         }
 
         createNewPiece();
+
+        soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
+        soundPlayer.setLoop(true);
     }
 
     private class GridRunnable implements Runnable {

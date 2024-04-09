@@ -80,10 +80,7 @@ public class Grid extends Observable {
                 }
             
                 System.out.println("Grid actionPerformed");
-                if(paused){
-                    continue;
-                }
-                else{
+                if(!paused){
                     updateGrid();
                 }
                 // printGrid(DisplayGrid);

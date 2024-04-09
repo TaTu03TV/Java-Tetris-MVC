@@ -161,17 +161,7 @@ public class Grid extends Observable {
             for (int j = 0; j < 4; j++) {
                 if (PieceGrid[i][j] != 0) {
                     if (CurrentGrid[i + currentPiece.getPos()[0]][j + currentPiece.getPos()[1]] != 0) {
-                        if (soundPlayer == null) {
-                            System.out.println("soundPlayer is null");
-                        } else {
-                            try {
-                                soundPlayer.stop();
-                                soundPlayer.playSound("assets/Sounds/Effects/gameover.wav");
-                                
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        
                         setChanged();
                         notifyObservers("Game Over");
 

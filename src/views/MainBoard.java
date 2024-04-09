@@ -26,6 +26,7 @@ public class MainBoard extends JPanel implements Observer{
     private static GameController gameController;
     private static Grid currentGrid;
     private static JLabel Title;
+    private static JLabel LabelScore;
     private static JLabel Score;
     private static JLabel NextPiece;
     private static JLabel HoldPiece;
@@ -56,10 +57,16 @@ public class MainBoard extends JPanel implements Observer{
         Title.setBounds(200, 15, 500, 50);
         add(Title);
 
-        Score = new JLabel("Score: 0");
+        LabelScore = new JLabel("Score: ");
+        LabelScore.setForeground(Color.RED);
+        LabelScore.setFont(font.deriveFont(25f));
+        LabelScore.setBounds(440, 100, 500, 25);
+        add(LabelScore);
+
+        Score = new JLabel("0");
         Score.setForeground(Color.RED);
         Score.setFont(font.deriveFont(25f));
-        Score.setBounds(440, 100, 500, 25);
+        Score.setBounds(440, 150, 500, 25);
         add(Score);
 
         NextPiece = new JLabel("Next Piece");
@@ -105,7 +112,7 @@ public class MainBoard extends JPanel implements Observer{
         if(arg == null && !GameOver.isVisible()) {
             System.err.println("MainBoard update");
             repaint();
-            Score.setText("Score: " + currentGrid.returnScore());
+            Score.setText(""+ currentGrid.returnScore());
         }
         else{
             if(arg == "Game Over"){
@@ -136,7 +143,7 @@ public class MainBoard extends JPanel implements Observer{
     public void resetGame() {
         GameOver.setVisible(false);
         currentGrid.reset();
-        Score.setText("Score: 0");
+        Score.setText("0");
 
     }
 

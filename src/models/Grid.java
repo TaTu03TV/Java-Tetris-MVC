@@ -17,6 +17,7 @@ public class Grid extends Observable {
     private Piece[] PieceList; // Initialize PieceList array
     private Piece ghostPiece;
     private int ghostColor = 8; // or any other distinct color
+    private int bestscore;
     private int score;
     private int descendingSpeed;
     private boolean paused = false;
@@ -53,6 +54,21 @@ public class Grid extends Observable {
         
         soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
         soundPlayer.setLoop(true);
+
+        // recuperer le meilleur score
+        try {
+            File file = new File("best-score.txt");
+            if (file.exists()) {
+                try (Scanner scanner = new Scanner(file)) {
+                    if (scanner.hasNextInt()) {
+                        bestscore = scanner.nextInt();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            bestscore = 0;
+            System.out.println("Error reading best score: " + e.getMessage());
+        }
 
     }
 
@@ -136,6 +152,10 @@ public class Grid extends Observable {
         return score;
     }
 
+    public int returnBestScore() {
+        return bestscore;
+    }
+
     public void updateGrid() {
         // descend toutes les lignes de 1
         clearDisplayGrid();
@@ -185,35 +205,25 @@ public class Grid extends Observable {
     
         soundPlayer.stop();
     
-        // Save best score
-        try {
-            File file = new File("best-score.txt");
-            int bestScore = 0;
+        File file = new File("best-score.txt");
     
-            // Read best score from file
-            if (file.exists()) {
-                try (Scanner scanner = new Scanner(file)) {
-                    if (scanner.hasNextInt()) {
-                        bestScore = scanner.nextInt();
-                    }
-                }
-            }
+        // Compare best score with current score
+        if (score > bestscore) {
+            bestscore = score;
     
-            // Compare best score with current score
-            if (score > bestScore) {
-                bestScore = score;
+            // Save new best score
+            try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
+                out.println(bestscore);
+            } catch (IOException e) {
+                System.out.println("Error saving best score: " + e.getMessage());
+            }
+        }
     
-                // Save new best score
-                try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
-                    out.println(bestScore);
-                }
-            }
-            // Save score in Histo
-            try (PrintWriter out = new PrintWriter(new FileWriter("histo-score.txt", true))) {
-                out.println(score);
-            }
+        // Save score in Histo
+        try (PrintWriter out = new PrintWriter(new FileWriter("histo-score.txt", true))) {
+            out.println(score);
         } catch (IOException e) {
-            System.out.println("Error saving best score: " + e.getMessage());
+            System.out.println("Error saving score: " + e.getMessage());
         }
     
         setChanged();

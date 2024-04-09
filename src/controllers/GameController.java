@@ -35,6 +35,8 @@ public class GameController {
                     if(grid.canRotate()){
                         grid.rotatePiece();
                     }
+                }if(e.getKeyChar() == 'p'){
+                    grid.pause();
                 }
             } 
         });

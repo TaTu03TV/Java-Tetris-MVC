@@ -13,6 +13,7 @@ public class Grid extends Observable {
     private int ghostColor = 8; // or any other distinct color
     private int score;
     private int descendingSpeed;
+    private boolean paused = false;
 
     public Grid() {
         System.out.println("Grid");
@@ -79,12 +80,21 @@ public class Grid extends Observable {
                 }
             
                 System.out.println("Grid actionPerformed");
-                updateGrid();
+                if(paused){
+                    continue;
+                }
+                else{
+                    updateGrid();
+                }
                 // printGrid(DisplayGrid);
                 setChanged();
                 notifyObservers();
             }
         }
+    }
+
+    public void pause(){
+        paused = !paused;
     }
 
     public void start() {

@@ -26,6 +26,8 @@ public class MainBoard extends JPanel implements Observer {
     private static JLabel Title;
     private static JLabel LabelScore;
     private static JLabel Score;
+    private static JLabel LabelBestScore;
+    private static JLabel BestScore;
     private static JLabel NextPiece;
     private static JLabel HoldPiece;
     private static JLabel GameOver;
@@ -64,8 +66,20 @@ public class MainBoard extends JPanel implements Observer {
         Score = new JLabel("0");
         Score.setForeground(Color.RED);
         Score.setFont(font.deriveFont(25f));
-        Score.setBounds(440, 150, 500, 25);
+        Score.setBounds(440, 125, 500, 25);
         add(Score);
+
+        LabelBestScore = new JLabel("Best Score: ");
+        LabelBestScore.setForeground(Color.GREEN);
+        LabelBestScore.setFont(font.deriveFont(25f));
+        LabelBestScore.setBounds(440, 175, 500, 25);
+        add(LabelBestScore);
+        
+        BestScore = new JLabel("0");
+        BestScore.setForeground(Color.GREEN);
+        BestScore.setFont(font.deriveFont(25f));
+        BestScore.setBounds(440, 200, 500, 25);
+        add(BestScore);
 
         NextPiece = new JLabel("Next Piece");
         NextPiece.setForeground(Color.RED);
@@ -89,6 +103,8 @@ public class MainBoard extends JPanel implements Observer {
         currentGrid = new Grid();
         currentGrid.addObserver(this);
         gameController = new GameController(currentGrid, this);
+    
+        BestScore.setText(""+currentGrid.returnBestScore());
         this.start();
     }
 
@@ -142,6 +158,7 @@ public class MainBoard extends JPanel implements Observer {
         GameOver.setVisible(false);
         currentGrid.reset();
         Score.setText("0");
+        BestScore.setText(""+currentGrid.returnBestScore());
 
     }
 

@@ -242,7 +242,7 @@ public class Grid extends Observable {
     }
 
     public void descendPiece() {
-        int numbOfFrames = 7 - level / 2 + 2;
+        int numbOfFrames = Math.max(1, 7 - level / 2 + 2);
         if (descendingSpeed != numbOfFrames) {
             descendingSpeed++;
         } else {
@@ -342,7 +342,7 @@ public class Grid extends Observable {
             }
         }
 
-        int multiplier = (level / 2) + 3;
+        int multiplier = (level / 2) + 2;
         int[] scores = { 0, 40, 100, 300, 1200 }; 
         if (linesRemoved >= 1 && linesRemoved <= 4) {
             score += scores[linesRemoved] * multiplier;

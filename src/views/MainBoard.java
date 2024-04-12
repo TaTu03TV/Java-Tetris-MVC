@@ -84,15 +84,15 @@ public class MainBoard extends JPanel implements Observer {
         add(BestScore);
 
         LabelLevel = new JLabel("Level: ");
-        LabelLevel.setForeground(Color.GREEN);
+        LabelLevel.setForeground(new Color(255, 152, 0));
         LabelLevel.setFont(font.deriveFont(25f));
-        LabelLevel.setBounds(440, 225, 500, 25);
+        LabelLevel.setBounds(430, 600, 500, 25);
         add(LabelLevel);
 
         Level = new JLabel("1");
-        Level.setForeground(Color.GREEN);
+        Level.setForeground(new Color(255, 152, 0));
         Level.setFont(font.deriveFont(25f));
-        Level.setBounds(440, 250, 500, 25);
+        Level.setBounds(510, 600, 500, 25);
         add(Level);
 
         NextPiece = new JLabel("Next Piece");

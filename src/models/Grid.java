@@ -26,11 +26,9 @@ public class Grid extends Observable {
     public Grid() {
         initializeGrids();
         createNewPiece();
-        /* 
         soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
         soundPlayer.setLoop(true);
         bestscore = getBestScore();
-        */
     }
 
     private void initializeGrids() {
@@ -76,10 +74,8 @@ public class Grid extends Observable {
         PieceList[0] = null;
         PieceList[1] = null;
         createNewPiece();
-        /* 
         soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
         soundPlayer.setLoop(true);
-        */
     }
 
     private class GridRunnable implements Runnable {
@@ -202,9 +198,7 @@ public class Grid extends Observable {
 
     private void gameover() {
         System.out.println("Game Over");
-        /*
         soundPlayer.stop();
-        */
         File file = new File("best-score.txt");
         if (score > bestscore) {
             bestscore = score;
@@ -335,9 +329,7 @@ public class Grid extends Observable {
             if (complete) {
                 linesRemoved += 1;
                 try {
-                    /* 
                     soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
-                    */
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

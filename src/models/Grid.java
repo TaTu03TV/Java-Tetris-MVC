@@ -26,9 +26,14 @@ public class Grid extends Observable {
     public Grid() {
         initializeGrids();
         createNewPiece();
-        soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
-        soundPlayer.setLoop(true);
         bestscore = getBestScore();
+        soundPlayer.addSoundFile("/assets/Sounds/Musics/theme.wav");
+        soundPlayer.addSoundFile("/assets/Sounds/Effects/clear.wav");
+        soundPlayer.addSoundFile("/assets/Sounds/Effects/gameover.wav");
+        soundPlayer.addSoundFile("/assets/Sounds/Effects/success.wav");
+        soundPlayer.setVolumeAll(-10.0f);
+        soundPlayer.playSound(0);
+        soundPlayer.loopSound(0);
     }
 
     private void initializeGrids() {
@@ -329,7 +334,7 @@ public class Grid extends Observable {
             if (complete) {
                 linesRemoved += 1;
                 try {
-                    soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
+                    soundPlayer.playSound(1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -346,6 +351,12 @@ public class Grid extends Observable {
         int[] scores = { 0, 40, 100, 300, 1200 }; 
         if (linesRemoved >= 1 && linesRemoved <= 4) {
             score += scores[linesRemoved] * multiplier;
+            if(linesRemoved == 4) {
+                soundPlayer.setVolume(5.0f, 3);
+                soundPlayer.playSound(3);
+            } else {
+                soundPlayer.playSound(1);
+            }
         }
         calculateLevel();
         return complete;

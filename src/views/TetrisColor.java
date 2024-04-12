@@ -3,13 +3,13 @@ package views;
 import java.awt.Color;
 
 public enum TetrisColor {
-    I(Color.CYAN, 1),
-    O(Color.YELLOW, 2),
-    T(Color.MAGENTA, 3),
-    S(Color.GREEN, 4),
-    Z(Color.RED, 5),
-    J(Color.BLUE, 6),
-    L(Color.ORANGE, 7),
+    I(new Color(0, 188, 212), 1), // Cyan
+    O(new Color(255, 235, 59), 2), // Yellow
+    T(new Color(156, 39, 176), 3), // Magenta
+    S(new Color(76, 175, 80), 4), // Green
+    Z(new Color(244, 67, 54), 5), // Red
+    J(new Color(33, 150, 243), 6), // Blue
+    L(new Color(255, 152, 0), 7), // Orange
     EMPTY(new Color(47, 39, 41), 0), //47, 39, 41
     GHOST(new Color(250, 250, 250, 100), 8);
 

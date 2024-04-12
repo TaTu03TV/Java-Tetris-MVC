@@ -32,6 +32,7 @@ public class MainBoard extends JPanel implements Observer {
     private static JLabel HoldPiece;
     private static JLabel GameOver;
     private static Font font;
+    private static Font titleFont;
 
     private Image backgroundImage;
 
@@ -41,6 +42,7 @@ public class MainBoard extends JPanel implements Observer {
         // load font title
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Font/telelower.ttf"));
+            titleFont = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Font/Tetris.ttf"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,49 +54,49 @@ public class MainBoard extends JPanel implements Observer {
         }
 
         Title = new JLabel("Tetris");
-        Title.setForeground(Color.YELLOW);
-        Title.setFont(font.deriveFont(50f));
-        Title.setBounds(200, 15, 500, 50);
+        Title.setForeground(new Color(255, 235, 59));
+        Title.setFont(titleFont.deriveFont(50f));
+        Title.setBounds(150, 15, 500, 50);
         add(Title);
 
         LabelScore = new JLabel("Score: ");
-        LabelScore.setForeground(Color.RED);
+        LabelScore.setForeground(new Color(244, 67, 54));
         LabelScore.setFont(font.deriveFont(25f));
-        LabelScore.setBounds(440, 100, 500, 25);
+        LabelScore.setBounds(430, 100, 500, 25);
         add(LabelScore);
 
         Score = new JLabel("0");
-        Score.setForeground(Color.RED);
+        Score.setForeground(new Color(244, 67, 54));
         Score.setFont(font.deriveFont(25f));
-        Score.setBounds(440, 125, 500, 25);
+        Score.setBounds(430, 125, 500, 25);
         add(Score);
 
         LabelBestScore = new JLabel("Best Score: ");
-        LabelBestScore.setForeground(Color.GREEN);
+        LabelBestScore.setForeground(new Color(76, 175, 80));
         LabelBestScore.setFont(font.deriveFont(25f));
-        LabelBestScore.setBounds(440, 175, 500, 25);
+        LabelBestScore.setBounds(430, 175, 500, 25);
         add(LabelBestScore);
         
         BestScore = new JLabel("0");
-        BestScore.setForeground(Color.GREEN);
+        BestScore.setForeground(new Color(76, 175, 80));
         BestScore.setFont(font.deriveFont(25f));
-        BestScore.setBounds(440, 200, 500, 25);
+        BestScore.setBounds(430, 200, 500, 25);
         add(BestScore);
 
         NextPiece = new JLabel("Next Piece");
-        NextPiece.setForeground(Color.RED);
+        NextPiece.setForeground(new Color(244, 67, 54));
         NextPiece.setFont(font.deriveFont(25f));
-        NextPiece.setBounds(440, 270, 500, 25);
+        NextPiece.setBounds(430, 270, 500, 25);
         add(NextPiece);
 
         HoldPiece = new JLabel("Hold Piece");
-        HoldPiece.setForeground(Color.RED);
+        HoldPiece.setForeground(new Color(244, 67, 54));
         HoldPiece.setFont(font.deriveFont(25f));
-        HoldPiece.setBounds(440, 450, 500, 25);
+        HoldPiece.setBounds(430, 450, 500, 25);
         add(HoldPiece);
 
         GameOver = new JLabel("Game Over");
-        GameOver.setForeground(Color.RED);
+        GameOver.setForeground(new Color(244, 67, 54));
         GameOver.setFont(font.deriveFont(60f));
         GameOver.setBounds(100, 200, 500, 70);
         add(GameOver);
@@ -113,8 +115,8 @@ public class MainBoard extends JPanel implements Observer {
         super.paintComponent(g);
         g.drawImage(backgroundImage, -10, 0, this);
         drawGrid(currentGrid.returnGrid(), g);
-        drawNextPiece(currentGrid.returnNextPiece(), g);
-        drawHoldPiece(currentGrid.returnHoldPiece(), g);
+        drawPiecePreview(currentGrid.returnNextPiece(), g, 455, 300, 25);
+        drawPiecePreview(currentGrid.returnHoldPiece(), g, 455, 480, 25);
     }
 
     public void start() {
@@ -166,16 +168,26 @@ public class MainBoard extends JPanel implements Observer {
         // clear le pannel
         g.setColor(new Color(47, 39, 41));
         g.fillRect(10, 140, 400, 800);
-
+    
         // affiche des carré de couleur rouge où grid contient 1
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == 1) {
-                    g.setColor(TetrisColor.getColorByValue(grid[i][j]).getColor());
+                if (grid[i][j] != 0) {
+                    Color baseColor = TetrisColor.getColorByValue(grid[i][j]).getColor();
+                    g.setColor(baseColor);
                     g.fillRect(10 + i * 40, 140 + j * 40, 40, 40); // décalé de 10px à gauche et 30px vers le haut
-                } else {
-                    g.setColor(TetrisColor.getColorByValue(grid[i][j]).getColor());
-                    g.fillRect(10 + i * 40, 140 + j * 40, 40, 40); // décalé de 10px à gauche et 30px vers le haut
+    
+                    // Draw shadows
+                    Color shadowColor = baseColor.darker().darker(); // Make the shadow darker
+                    g.setColor(shadowColor);
+                    g.fillRect(10 + i * 40, 140 + j * 40, 5, 40); // Shadow on the left side
+                    g.fillRect(10 + i * 40, 140 + j * 40 + 35, 40, 5); // Shadow on the bottom side
+    
+                    // Draw highlights
+                    Color highlightColor = baseColor.brighter().brighter(); // Make the highlight brighter
+                    g.setColor(highlightColor);
+                    g.fillRect(10 + i * 40, 140 + j * 40, 40, 5); // Highlight on the top side
+                    g.fillRect(10 + i * 40 + 35, 140 + j * 40, 5, 40); // Highlight on the right side
                 }
             }
         }
@@ -187,32 +199,14 @@ public class MainBoard extends JPanel implements Observer {
         g.fillRect(10, 140, 400, 800);
     }
 
-    public void drawNextPiece(Piece p, Graphics g) {
-        int[][] shape = p.getShape();
-        int[] pos = p.getPos();
-        int blocSize = 30;
-        int color = p.getColor();
-        for (int i = 0; i < shape.length; i++) {
-            for (int j = 0; j < shape[i].length; j++) {
-                if (shape[i][j] == 1) {
-                    g.setColor(TetrisColor.getColorByValue(color).getColor());
-                    g.fillRect(445 + i * blocSize, 300 + j * blocSize, blocSize, blocSize);
-                }
-            }
-        }
-    }
-
-    public void drawHoldPiece(Piece p, Graphics g) {
+    public void drawPiecePreview(Piece p, Graphics g, int x, int y, int blocSize) {
         if (p != null) {
             int[][] shape = p.getShape();
-            int[] pos = p.getPos();
-            int blocSize = 30;
-            int color = p.getColor();
             for (int i = 0; i < shape.length; i++) {
                 for (int j = 0; j < shape[i].length; j++) {
                     if (shape[i][j] == 1) {
-                        g.setColor(TetrisColor.getColorByValue(color).getColor());
-                        g.fillRect(445 + i * blocSize, 480 + j * blocSize, blocSize, blocSize);
+                        g.setColor(TetrisColor.getColorByValue(8).getColor());
+                        g.fillRect(x + i * blocSize, y + j * blocSize, blocSize, blocSize);
                     }
                 }
             }

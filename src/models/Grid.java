@@ -1,55 +1,57 @@
 package models;
 
-import java.util.Observable;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Observable;
 import java.util.Scanner;
-import java.io.File;
 
 public class Grid extends Observable {
 
     private SoundPlayer soundPlayer = new SoundPlayer();
-
     private int[][] DisplayGrid;
     private int[][] PieceGrid;
     private int[][] CurrentGrid;
-    private Piece[] PieceList; // Initialize PieceList array
+    private Piece[] PieceList;
     private Piece ghostPiece;
     private Piece holdPiece;
-    private int ghostColor = 8; // or any other distinct color
+    private int ghostColor = 8;
     private int bestscore;
     private int score;
     private int descendingSpeed;
+    private short level = 1;
     private boolean paused = false;
 
     public Grid() {
-        System.out.println("Grid");
-        PieceList = new Piece[2]; // or any desired size
-        // we add 2 pieces to the list
+        initializeGrids();
+        createNewPiece();
+        soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
+        soundPlayer.setLoop(true);
+        bestscore = getBestScore();
+    }
 
-        // initialisation des grilles
-
+    private void initializeGrids() {
+        PieceList = new Piece[2];
         DisplayGrid = new int[10][20];
         PieceGrid = new int[4][4];
         CurrentGrid = new int[10][20];
-
         descendingSpeed = 0;
-
         score = 0;
+        level = 1;
+        clearGrids(DisplayGrid);
+        clearGrids(CurrentGrid);
+        clearGrids(PieceGrid);
+    }
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 20; j++) {
-                DisplayGrid[i][j] = 0;
-                CurrentGrid[i][j] = 0;
+    private void clearGrids(int[][] grid) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                grid[i][j] = 0;
             }
         }
+    }
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                PieceGrid[i][j] = 0;
-            }
-        }
 
         createNewPiece();
         
@@ -64,40 +66,32 @@ public class Grid extends Observable {
         soundPlayer.loopSound(0);
 
 
-        // recuperer le meilleur score
+
+    private int getBestScore() {
         try {
             File file = new File("best-score.txt");
             if (file.exists()) {
                 try (Scanner scanner = new Scanner(file)) {
                     if (scanner.hasNextInt()) {
-                        bestscore = scanner.nextInt();
+                        return scanner.nextInt();
                     }
                 }
             }
         } catch (IOException e) {
-            bestscore = 0;
             System.out.println("Error reading best score: " + e.getMessage());
         }
-
+        return 0;
     }
 
     public void reset() {
         score = 0;
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 20; j++) {
-                DisplayGrid[i][j] = 0;
-                CurrentGrid[i][j] = 0;
-            }
-        }
-
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                PieceGrid[i][j] = 0;
-            }
-        }
-
+        initializeGrids();
+        PieceList[0] = null;
+        PieceList[1] = null;
         createNewPiece();
+
         soundPlayer.playSound(0);
+
     }
 
     private class GridRunnable implements Runnable {
@@ -106,12 +100,10 @@ public class Grid extends Observable {
             while (true) {
                 try {
                     Thread.sleep(75);
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-                if(!paused){
+                if (!paused) {
                     updateGrid();
                 }
                 setChanged();
@@ -120,7 +112,7 @@ public class Grid extends Observable {
         }
     }
 
-    public void pause(){
+    public void pause() {
         paused = !paused;
     }
 
@@ -162,10 +154,8 @@ public class Grid extends Observable {
     }
 
     public void updateGrid() {
-        // descend toutes les lignes de 1
         clearDisplayGrid();
         descendPiece();
-
         fusionGrid();
         calculateGhostPiece();
         if (suppriLigne()) {
@@ -174,7 +164,6 @@ public class Grid extends Observable {
     }
 
     public void createNewPiece() {
-        // we check if the array is empty
         if (PieceList[1] == null || PieceList[0] == null) {
             PieceList[0] = Piece.placeRandomPiece(PieceGrid, true);
             addToPieceGrid(PieceList[0]);
@@ -192,14 +181,12 @@ public class Grid extends Observable {
                 if (PieceGrid[i][j] != 0) {
                     if (CurrentGrid[i + PieceList[0].getPos()[0]][j + PieceList[0].getPos()[1]] != 0) {
                         gameover();
-
                         return;
                     }
                 }
             }
         }
     }
-
 
     public void holdPiece() {
         if (holdPiece == null) {
@@ -225,35 +212,26 @@ public class Grid extends Observable {
         }
     }
 
-
     private void gameover() {
-        // Game over
-        System.out.println("Game Over");
-    
+        System.out.println("Game Over");    
         soundPlayer.stopSound(0);
         soundPlayer.playSound(2);
     
+
         File file = new File("best-score.txt");
-    
-        // Compare best score with current score
         if (score > bestscore) {
             bestscore = score;
-    
-            // Save new best score
             try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
                 out.println(bestscore);
             } catch (IOException e) {
                 System.out.println("Error saving best score: " + e.getMessage());
             }
         }
-    
-        // Save score in Histo
         try (PrintWriter out = new PrintWriter(new FileWriter("histo-score.txt", true))) {
             out.println(score);
         } catch (IOException e) {
             System.out.println("Error saving score: " + e.getMessage());
         }
-    
         setChanged();
         notifyObservers("Game Over");
     }
@@ -266,7 +244,6 @@ public class Grid extends Observable {
                 }
             }
         }
-        
     }
 
     public boolean canDescend() {
@@ -284,7 +261,8 @@ public class Grid extends Observable {
     }
 
     public void descendPiece() {
-        if (descendingSpeed != 5) {
+        int numbOfFrames = Math.max(1, 7 - level / 2 + 2);
+        if (descendingSpeed != numbOfFrames) {
             descendingSpeed++;
         } else {
             if (canDescend()) {
@@ -307,8 +285,6 @@ public class Grid extends Observable {
     public void fusionGrid() {
         int xPos = PieceList[0].getPos()[0];
         int yPos = PieceList[0].getPos()[1];
-
-        // Draw the ghostPiece with a different color
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i + ghostPiece.getPos()[0] < DisplayGrid.length
@@ -340,7 +316,6 @@ public class Grid extends Observable {
     }
 
     public void clearDisplayGrid() {
-        // clear la grille d'affichage
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 20; j++) {
                 DisplayGrid[i][j] = 0;
@@ -372,6 +347,12 @@ public class Grid extends Observable {
             }
             if (complete) {
                 linesRemoved += 1;
+
+                try {
+                    soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 for (int k = j; k > 0; k--) {
                     for (int i = 0; i < 10; i++) {
                         CurrentGrid[i][k] = CurrentGrid[i][k - 1];
@@ -380,6 +361,7 @@ public class Grid extends Observable {
                 j++;
             }
         }
+
 
         switch (linesRemoved) {
             case 1:
@@ -400,9 +382,26 @@ public class Grid extends Observable {
                 soundPlayer.playSound(3);
                 soundPlayer.playSound(1);
                 break;
-        }
 
+        int multiplier = (level / 2) + 2;
+        int[] scores = { 0, 40, 100, 300, 1200 }; 
+        if (linesRemoved >= 1 && linesRemoved <= 4) {
+            score += scores[linesRemoved] * multiplier;
+
+        }
+        calculateLevel();
         return complete;
+    }
+
+    public short getLevel() {
+        return level;
+    }
+
+    private void calculateLevel() {
+        // we convert the score to a short to avoid overflow
+        short newLevel = (short) (Math.log(score + 1) / Math.log(3) / 2);
+        System.out.println("Score: " + score + " Level: " + level + " New Level: " + newLevel);
+        level = newLevel;
     }
 
     public void movePieceHorizontally(boolean moveRight) {

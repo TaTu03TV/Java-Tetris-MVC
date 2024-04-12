@@ -28,6 +28,8 @@ public class MainBoard extends JPanel implements Observer {
     private static JLabel Score;
     private static JLabel LabelBestScore;
     private static JLabel BestScore;
+    private static JLabel LabelLevel;
+    private static JLabel Level;
     private static JLabel NextPiece;
     private static JLabel HoldPiece;
     private static JLabel GameOver;
@@ -38,8 +40,6 @@ public class MainBoard extends JPanel implements Observer {
 
     public MainBoard() {
         setLayout(null);
-
-        // load font title
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Font/telelower.ttf"));
             titleFont = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Font/Tetris.ttf"));
@@ -83,6 +83,18 @@ public class MainBoard extends JPanel implements Observer {
         BestScore.setBounds(430, 200, 500, 25);
         add(BestScore);
 
+        LabelLevel = new JLabel("Level: ");
+        LabelLevel.setForeground(new Color(255, 152, 0));
+        LabelLevel.setFont(font.deriveFont(25f));
+        LabelLevel.setBounds(430, 600, 500, 25);
+        add(LabelLevel);
+
+        Level = new JLabel("1");
+        Level.setForeground(new Color(255, 152, 0));
+        Level.setFont(font.deriveFont(25f));
+        Level.setBounds(510, 600, 500, 25);
+        add(Level);
+
         NextPiece = new JLabel("Next Piece");
         NextPiece.setForeground(new Color(244, 67, 54));
         NextPiece.setFont(font.deriveFont(25f));
@@ -107,6 +119,9 @@ public class MainBoard extends JPanel implements Observer {
         gameController = new GameController(currentGrid, this);
     
         BestScore.setText(""+currentGrid.returnBestScore());
+        //we reset the next piece and hold piece
+        currentGrid.returnNextPiece();
+        currentGrid.returnHoldPiece();
         this.start();
     }
 
@@ -129,6 +144,7 @@ public class MainBoard extends JPanel implements Observer {
             repaint();
 
             Score.setText("" + currentGrid.returnScore());
+            Level.setText("" + currentGrid.getLevel());
         } else {
             if (arg == "Game Over") {
                 System.out.println("Game Over");

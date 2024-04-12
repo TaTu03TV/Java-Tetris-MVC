@@ -37,8 +37,6 @@ public class MainBoard extends JPanel implements Observer {
 
     public MainBoard() {
         setLayout(null);
-
-        // load font title
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Font/telelower.ttf"));
         } catch (Exception e) {

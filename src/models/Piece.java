@@ -16,8 +16,7 @@ public class Piece {
         this.ypos = ypos;
     }
 
-
-    public Piece(Piece other) { //constructeur par copie
+    public Piece(Piece other) { 
         this.shape = other.shape;
         this.color = other.color;
         this.xpos = other.xpos;
@@ -33,7 +32,6 @@ public class Piece {
     public Piece Piece(){
         return getRandomPiece();
     }
-
 
     public int[][] getShape() {
         return this.shape.getShape();
@@ -60,8 +58,6 @@ public class Piece {
     public static Piece placeRandomPiece(int[][] PieceGrid, boolean render) {
         PieceShape[] shapes = PieceShape.values();
         PieceShape randomShape = shapes[new Random().nextInt(shapes.length)];
-    
-        // Create a new piece with the random shape and its color
         Piece randomPiece = new Piece(randomShape, 5, 0);
         return randomPiece;
     }

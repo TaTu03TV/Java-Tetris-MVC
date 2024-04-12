@@ -6,6 +6,7 @@ import java.awt.event.*;
 
 public class Menu extends JFrame {
     public Menu() {
+        setSize(300, 300);
         setLayout(new GridLayout(3, 1));
         JButton playButton = new JButton("Play");
         JButton settingsButton = new JButton("Settings");

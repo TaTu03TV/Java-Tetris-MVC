@@ -53,8 +53,20 @@ public class Grid extends Observable {
 
         createNewPiece();
         
-        soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
-        soundPlayer.setLoop(true);
+        soundPlayer.addSoundFile("/assets/Sounds/Musics/theme.wav");
+        soundPlayer.loopSound(0);
+        soundPlayer.addSoundFile("/assets/Sounds/Effects/clear.wav");
+        soundPlayer.addSoundFile("/assets/Sounds/Effects/gameover.wav");
+        soundPlayer.addSoundFile("/assets/Sounds/Effects/success.wav");
+        soundPlayer.setVolumeAll(-10.0f);
+
+        // affiche liste sons
+        System.out.println(soundPlayer.getSoundFiles());
+        System.out.println(soundPlayer.getPlayingClips());
+
+
+        soundPlayer.playSound(0);
+
 
         // recuperer le meilleur score
         try {
@@ -89,9 +101,7 @@ public class Grid extends Observable {
         }
 
         createNewPiece();
-
-        soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
-        soundPlayer.setLoop(true);
+        soundPlayer.playSound(0);
     }
 
     private class GridRunnable implements Runnable {
@@ -224,7 +234,8 @@ public class Grid extends Observable {
         // Game over
         System.out.println("Game Over");
     
-        soundPlayer.stop();
+        soundPlayer.stopSound(0);
+        soundPlayer.playSound(2);
     
         File file = new File("best-score.txt");
     
@@ -365,13 +376,6 @@ public class Grid extends Observable {
             }
             if (complete) {
                 linesRemoved += 1;
-                try {
-                    soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
-                    
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
                 for (int k = j; k > 0; k--) {
                     for (int i = 0; i < 10; i++) {
                         CurrentGrid[i][k] = CurrentGrid[i][k - 1];
@@ -384,15 +388,21 @@ public class Grid extends Observable {
         switch (linesRemoved) {
             case 1:
                 score += 40;
+                soundPlayer.playSound(1);
                 break;
             case 2:
                 score += 100;
+                soundPlayer.playSound(1);
                 break;
             case 3:
                 score += 300;
+                soundPlayer.playSound(1);
                 break;
             case 4:
                 score += 1200;
+                soundPlayer.setVolume(5.0f, 3);
+                soundPlayer.playSound(3);
+                soundPlayer.playSound(1);
                 break;
         }
 

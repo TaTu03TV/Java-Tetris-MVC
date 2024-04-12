@@ -26,9 +26,11 @@ public class Grid extends Observable {
     public Grid() {
         initializeGrids();
         createNewPiece();
+        /* 
         soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
         soundPlayer.setLoop(true);
         bestscore = getBestScore();
+        */
     }
 
     private void initializeGrids() {
@@ -52,21 +54,6 @@ public class Grid extends Observable {
         }
     }
 
-
-        createNewPiece();
-        
-        soundPlayer.addSoundFile("/assets/Sounds/Musics/theme.wav");
-        soundPlayer.addSoundFile("/assets/Sounds/Effects/clear.wav");
-        soundPlayer.addSoundFile("/assets/Sounds/Effects/gameover.wav");
-        soundPlayer.addSoundFile("/assets/Sounds/Effects/success.wav");
-        soundPlayer.setVolumeAll(-10.0f);
-
-        soundPlayer.playSound(0);
-        
-        soundPlayer.loopSound(0);
-
-
-
     private int getBestScore() {
         try {
             File file = new File("best-score.txt");
@@ -89,9 +76,10 @@ public class Grid extends Observable {
         PieceList[0] = null;
         PieceList[1] = null;
         createNewPiece();
-
-        soundPlayer.playSound(0);
-
+        /* 
+        soundPlayer.playSound("assets/Sounds/Musics/theme.wav");
+        soundPlayer.setLoop(true);
+        */
     }
 
     private class GridRunnable implements Runnable {
@@ -213,11 +201,10 @@ public class Grid extends Observable {
     }
 
     private void gameover() {
-        System.out.println("Game Over");    
-        soundPlayer.stopSound(0);
-        soundPlayer.playSound(2);
-    
-
+        System.out.println("Game Over");
+        /*
+        soundPlayer.stop();
+        */
         File file = new File("best-score.txt");
         if (score > bestscore) {
             bestscore = score;
@@ -347,9 +334,10 @@ public class Grid extends Observable {
             }
             if (complete) {
                 linesRemoved += 1;
-
                 try {
+                    /* 
                     soundPlayer.playSound("assets/Sounds/Effects/clear.wav");
+                    */
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -362,32 +350,10 @@ public class Grid extends Observable {
             }
         }
 
-
-        switch (linesRemoved) {
-            case 1:
-                score += 40;
-                soundPlayer.playSound(1);
-                break;
-            case 2:
-                score += 100;
-                soundPlayer.playSound(1);
-                break;
-            case 3:
-                score += 300;
-                soundPlayer.playSound(1);
-                break;
-            case 4:
-                score += 1200;
-                soundPlayer.setVolume(5.0f, 3);
-                soundPlayer.playSound(3);
-                soundPlayer.playSound(1);
-                break;
-
         int multiplier = (level / 2) + 2;
         int[] scores = { 0, 40, 100, 300, 1200 }; 
         if (linesRemoved >= 1 && linesRemoved <= 4) {
             score += scores[linesRemoved] * multiplier;
-
         }
         calculateLevel();
         return complete;

@@ -98,7 +98,7 @@ public class MainBoard extends JPanel implements Observer {
         GameOver = new JLabel("Game Over");
         GameOver.setForeground(new Color(244, 67, 54));
         GameOver.setFont(font.deriveFont(60f));
-        GameOver.setBounds(100, 200, 500, 70);
+        GameOver.setBounds(60, 200, 500, 70);
         add(GameOver);
         GameOver.setVisible(false);
 

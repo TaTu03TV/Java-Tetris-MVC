@@ -54,7 +54,6 @@ public class Grid extends Observable {
         createNewPiece();
         
         soundPlayer.addSoundFile("/assets/Sounds/Musics/theme.wav");
-        soundPlayer.loopSound(0);
         soundPlayer.addSoundFile("/assets/Sounds/Effects/clear.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/gameover.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/success.wav");
@@ -66,6 +65,8 @@ public class Grid extends Observable {
 
 
         soundPlayer.playSound(0);
+        
+        soundPlayer.loopSound(0);
 
 
         // recuperer le meilleur score

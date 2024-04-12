@@ -59,11 +59,6 @@ public class Grid extends Observable {
         soundPlayer.addSoundFile("/assets/Sounds/Effects/success.wav");
         soundPlayer.setVolumeAll(-10.0f);
 
-        // affiche liste sons
-        System.out.println(soundPlayer.getSoundFiles());
-        System.out.println(soundPlayer.getPlayingClips());
-
-
         soundPlayer.playSound(0);
         
         soundPlayer.loopSound(0);

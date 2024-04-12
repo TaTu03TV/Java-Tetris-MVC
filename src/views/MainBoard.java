@@ -28,6 +28,8 @@ public class MainBoard extends JPanel implements Observer {
     private static JLabel Score;
     private static JLabel LabelBestScore;
     private static JLabel BestScore;
+    private static JLabel LabelLevel;
+    private static JLabel Level;
     private static JLabel NextPiece;
     private static JLabel HoldPiece;
     private static JLabel GameOver;
@@ -79,6 +81,18 @@ public class MainBoard extends JPanel implements Observer {
         BestScore.setBounds(440, 200, 500, 25);
         add(BestScore);
 
+        LabelLevel = new JLabel("Level: ");
+        LabelLevel.setForeground(Color.GREEN);
+        LabelLevel.setFont(font.deriveFont(25f));
+        LabelLevel.setBounds(440, 225, 500, 25);
+        add(LabelLevel);
+
+        Level = new JLabel("1");
+        Level.setForeground(Color.GREEN);
+        Level.setFont(font.deriveFont(25f));
+        Level.setBounds(440, 250, 500, 25);
+        add(Level);
+
         NextPiece = new JLabel("Next Piece");
         NextPiece.setForeground(Color.RED);
         NextPiece.setFont(font.deriveFont(25f));
@@ -103,6 +117,9 @@ public class MainBoard extends JPanel implements Observer {
         gameController = new GameController(currentGrid, this);
     
         BestScore.setText(""+currentGrid.returnBestScore());
+        //we reset the next piece and hold piece
+        currentGrid.returnNextPiece();
+        currentGrid.returnHoldPiece();
         this.start();
     }
 
@@ -125,6 +142,7 @@ public class MainBoard extends JPanel implements Observer {
             repaint();
 
             Score.setText("" + currentGrid.returnScore());
+            Level.setText("" + currentGrid.getLevel());
         } else {
             if (arg == "Game Over") {
                 System.out.println("Game Over");

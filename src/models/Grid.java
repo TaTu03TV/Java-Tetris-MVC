@@ -25,8 +25,13 @@ public class Grid extends Observable {
 
     public Grid() {
         initializeGrids();
+        initializeSounds();
         createNewPiece();
         bestscore = getBestScore();
+        
+    }
+
+    private void initializeSounds(){
         soundPlayer.addSoundFile("/assets/Sounds/Musics/theme.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/clear.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/gameover.wav");
@@ -35,6 +40,8 @@ public class Grid extends Observable {
         soundPlayer.playSound(0);
         soundPlayer.loopSound(0);
     }
+
+
 
     private void initializeGrids() {
         PieceList = new Piece[2];
@@ -367,9 +374,7 @@ public class Grid extends Observable {
     }
 
     private void calculateLevel() {
-        // we convert the score to a short to avoid overflow
-        short newLevel = (short) (Math.log(score + 1) / Math.log(3) / 2);
-        System.out.println("Score: " + score + " Level: " + level + " New Level: " + newLevel);
+        short newLevel = (short) Math.max(1, (Math.log(score + 1) / Math.log(3) / 2));     
         level = newLevel;
     }
 

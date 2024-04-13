@@ -210,7 +210,11 @@ public class Grid extends Observable {
     private void gameover() {
         System.out.println("Game Over");
         soundPlayer.stopSound(0);
-        soundPlayer.playSound(2);
+        try {
+            soundPlayer.playSound(2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         File file = new File("best-score.txt");
         if (score > bestscore) {
             bestscore = score;

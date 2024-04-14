@@ -184,18 +184,22 @@ public class Grid extends Observable {
     }
 
     public void holdPiece() {
-        if (holdPiece == null) {
-            holdPiece = new Piece(PieceList[0]);
-            holdPiece.setPos(3, 0);
-            erasePieceGrid(PieceList[0]);
-            createNewPiece();
-        } else {
-            Piece temp = new Piece(PieceList[0]);
-            erasePieceGrid(PieceList[0]);
-            PieceList[0] = new Piece(holdPiece);
-            addToPieceGrid(PieceList[0]);
-            holdPiece = temp;
-            holdPiece.setPos(3, 0);
+        try {
+            if (holdPiece == null) {
+                holdPiece = new Piece(PieceList[0]);
+                holdPiece.setPos(3, 0);
+                erasePieceGrid(PieceList[0]);
+                createNewPiece();
+            } else {
+                Piece temp = new Piece(PieceList[0]);
+                erasePieceGrid(PieceList[0]);
+                PieceList[0] = new Piece(holdPiece);
+                addToPieceGrid(PieceList[0]);
+                holdPiece = temp;
+                holdPiece.setPos(3, 0);
+            }
+        } catch (Exception e) {
+            PieceList[0].setPos(5, 0);
         }
     }
 

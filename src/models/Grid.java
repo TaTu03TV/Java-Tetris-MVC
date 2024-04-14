@@ -41,9 +41,9 @@ public class Grid extends Observable {
      * @see Piece
      * @see SoundPlayer
      */
-    public Grid() {
+    public Grid(float volume) {
         initializeGrids();
-        initializeSounds();
+        initializeSounds(volume);
         createNewPiece();
         bestscore = getBestScore();
 
@@ -52,12 +52,13 @@ public class Grid extends Observable {
     /**
      * Method to initialize the sounds of the game
      */
-    private void initializeSounds(){
+    private void initializeSounds(float volume){
         soundPlayer.addSoundFile("/assets/Sounds/Musics/theme.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/clear.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/gameover.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/success.wav");
-        soundPlayer.setVolumeAll(-10.0f);
+        System.out.println("Volume: " + volume);
+        soundPlayer.setVolumeAll(volume);
         soundPlayer.playSound(0);
         soundPlayer.loopSound(0);
     }

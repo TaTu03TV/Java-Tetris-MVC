@@ -21,8 +21,8 @@ public class MainFrame extends JFrame{
      * 
      * @see MainBoard
      */
-    public MainFrame() {
-        board = new MainBoard();
+    public MainFrame(float volume) {
+        board = new MainBoard(volume);
         setLayout(new BorderLayout());
         add(board, BorderLayout.CENTER);
         setPreferredSize(new Dimension(590, 990));

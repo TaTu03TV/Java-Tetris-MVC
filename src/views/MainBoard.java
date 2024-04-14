@@ -54,7 +54,7 @@ public class MainBoard extends JPanel implements Observer {
      * @see GameController
      * @see Grid
      */
-    public MainBoard() {
+    public MainBoard(float volume) {
         setLayout(null);
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Font/telelower.ttf"));
@@ -130,7 +130,7 @@ public class MainBoard extends JPanel implements Observer {
         add(GameOver);
         GameOver.setVisible(false);
 
-        currentGrid = new Grid();
+        currentGrid = new Grid(volume);
         currentGrid.addObserver(this);
         gameController = new GameController(currentGrid, this);
     

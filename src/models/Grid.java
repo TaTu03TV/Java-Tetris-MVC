@@ -46,7 +46,7 @@ public class Grid extends Observable {
         initializeSounds();
         createNewPiece();
         bestscore = getBestScore();
-        
+
     }
 
     /**
@@ -485,10 +485,10 @@ public class Grid extends Observable {
         }
 
         int multiplier = (level / 2) + 2;
-        int[] scores = { 0, 40, 100, 300, 1200 }; 
+        int[] scores = { 0, 40, 100, 300, 1200 };
         if (linesRemoved >= 1 && linesRemoved <= 4) {
             score += scores[linesRemoved] * multiplier;
-            if(linesRemoved == 4) {
+            if (linesRemoved == 4) {
                 soundPlayer.setVolume(5.0f, 3);
                 soundPlayer.playSound(3);
             } else {
@@ -512,7 +512,7 @@ public class Grid extends Observable {
      * Method to calculate the level
      */
     private void calculateLevel() {
-        short newLevel = (short) Math.max(1, (Math.log(score + 1) / Math.log(3) / 2));     
+        short newLevel = (short) Math.max(1, (Math.log(score + 1) / Math.log(3) / 2));
         level = newLevel;
     }
 

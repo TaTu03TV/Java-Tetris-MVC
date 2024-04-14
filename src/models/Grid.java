@@ -28,10 +28,10 @@ public class Grid extends Observable {
         initializeSounds();
         createNewPiece();
         bestscore = getBestScore();
-        
+
     }
 
-    private void initializeSounds(){
+    private void initializeSounds() {
         soundPlayer.addSoundFile("/assets/Sounds/Musics/theme.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/clear.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/gameover.wav");
@@ -40,8 +40,6 @@ public class Grid extends Observable {
         soundPlayer.playSound(0);
         soundPlayer.loopSound(0);
     }
-
-
 
     private void initializeGrids() {
         PieceList = new Piece[2];
@@ -262,24 +260,30 @@ public class Grid extends Observable {
     }
 
     public void descendPiece() {
-        int numbOfFrames = Math.max(1, 7 - level / 2 + 2);
-        if (descendingSpeed != numbOfFrames) {
-            descendingSpeed++;
-        } else {
-            if (canDescend()) {
-                PieceList[0].setPos(PieceList[0].getPos()[0], PieceList[0].getPos()[1] + 1);
+        try {
+            int numbOfFrames = Math.max(1, 7 - level*2 + 1);
+            if (descendingSpeed != numbOfFrames) {
+                descendingSpeed++;
             } else {
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 4; j++) {
-                        if (PieceGrid[i][j] != 0) {
-                            CurrentGrid[i + PieceList[0].getPos()[0]][j + PieceList[0].getPos()[1]] = PieceGrid[i][j];
-                            PieceGrid[i][j] = 0;
+                if (canDescend()) {
+                    PieceList[0].setPos(PieceList[0].getPos()[0], PieceList[0].getPos()[1] + 1);
+                } else {
+                    for (int i = 0; i < 4; i++) {
+                        for (int j = 0; j < 4; j++) {
+                            if (PieceGrid[i][j] != 0) {
+                                CurrentGrid[i + PieceList[0].getPos()[0]][j
+                                        + PieceList[0].getPos()[1]] = PieceGrid[i][j];
+                                PieceGrid[i][j] = 0;
+                            }
                         }
                     }
+                    createNewPiece();
                 }
-                createNewPiece();
+                descendingSpeed = 0;
             }
-            descendingSpeed = 0;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("An error occurred while descending the piece. Resetting piece to default position.");
+            PieceList[0].setPos(3, 0);
         }
     }
 
@@ -363,10 +367,10 @@ public class Grid extends Observable {
         }
 
         int multiplier = (level / 2) + 2;
-        int[] scores = { 0, 40, 100, 300, 1200 }; 
+        int[] scores = { 0, 40, 100, 300, 1200 };
         if (linesRemoved >= 1 && linesRemoved <= 4) {
             score += scores[linesRemoved] * multiplier;
-            if(linesRemoved == 4) {
+            if (linesRemoved == 4) {
                 soundPlayer.setVolume(5.0f, 3);
                 soundPlayer.playSound(3);
             } else {
@@ -382,7 +386,7 @@ public class Grid extends Observable {
     }
 
     private void calculateLevel() {
-        short newLevel = (short) Math.max(1, (Math.log(score + 1) / Math.log(3) / 2));     
+        short newLevel = (short) Math.max(1, (Math.log(score + 1) / Math.log(3) / 2));
         level = newLevel;
     }
 

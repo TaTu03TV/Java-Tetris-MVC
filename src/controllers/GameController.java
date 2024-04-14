@@ -5,9 +5,24 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import models.Grid;
 
+/**
+ * Class GameController
+ * 
+ * This class is used to control the game. It contains methods to move the piece horizontally, descend the piece, rotate the piece, pause the game, and hold the piece.
+ * 
+ * @version 1.0
+ * @since 2024-04-14
+ * @see Grid
+ */
 public class GameController {
     private Grid grid;
 
+    /**
+     * Constructor for the GameController class. Overrides the key listener to control the game.
+     * 
+     * @param Grid Grid of the game
+     * @param board Board of the game
+     */
     public GameController(Grid Grid, JPanel board) {
         System.out.println("GameController");
         this.grid = Grid;
@@ -46,10 +61,6 @@ public class GameController {
             } 
         });
         board.setFocusable(true);
-    }
-
-    public void start() {
-        System.out.println("GameController start");
     }
 
 }

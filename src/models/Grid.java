@@ -7,6 +7,18 @@ import java.io.PrintWriter;
 import java.util.Observable;
 import java.util.Scanner;
 
+/**
+ * 
+ * Class to represent the grid of the game
+ * 
+ * This class is responsible for managing the grid of the game, the pieces, the score, the level and the sounds
+ * 
+ * @version 1.0
+ * @since 2024-04-14
+ * @see Piece
+ * @see SoundPlayer
+ * 
+ */
 public class Grid extends Observable {
 
     private SoundPlayer soundPlayer = new SoundPlayer();
@@ -23,6 +35,12 @@ public class Grid extends Observable {
     private short level = 1;
     private boolean paused = false;
 
+    /**
+     * Constructor for the Grid class
+     * 
+     * @see Piece
+     * @see SoundPlayer
+     */
     public Grid() {
         initializeGrids();
         initializeSounds();
@@ -31,6 +49,9 @@ public class Grid extends Observable {
         
     }
 
+    /**
+     * Method to initialize the sounds of the game
+     */
     private void initializeSounds(){
         soundPlayer.addSoundFile("/assets/Sounds/Musics/theme.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/clear.wav");
@@ -42,7 +63,9 @@ public class Grid extends Observable {
     }
 
 
-
+    /**
+     * Method to initialize the grids of the game
+     */
     private void initializeGrids() {
         PieceList = new Piece[2];
         DisplayGrid = new int[10][20];
@@ -56,6 +79,11 @@ public class Grid extends Observable {
         clearGrids(PieceGrid);
     }
 
+    /**
+     * Method to clear the grids of the game
+     * 
+     * @param grid Grid to clear
+     */
     private void clearGrids(int[][] grid) {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
@@ -64,6 +92,11 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to get the best score from the file
+     * 
+     * @return Best score of the game
+     */
     private int getBestScore() {
         try {
             File file = new File("best-score.txt");
@@ -80,6 +113,9 @@ public class Grid extends Observable {
         return 0;
     }
 
+    /**
+     * Method to reset the game
+     */
     public void reset() {
         score = 0;
         initializeGrids();
@@ -89,6 +125,11 @@ public class Grid extends Observable {
         soundPlayer.playSound(0);
     }
 
+    /**
+     * Loop to update the grid
+     * 
+     * @return Sound player
+     */
     private class GridRunnable implements Runnable {
         @Override
         public void run() {
@@ -107,14 +148,23 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to pause the game
+     */
     public void pause() {
         paused = !paused;
     }
 
+    /**
+     * Method to start the loop of the grid
+     */
     public void start() {
         new Thread(new GridRunnable()).start();
     }
 
+    /**
+     * Method to calculate the ghost piece
+     */
     public void calculateGhostPiece() {
         ghostPiece = new Piece(PieceList[0]);
         while (canDescend(ghostPiece)) {
@@ -122,6 +172,12 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to check if a piece can fall
+     * 
+     * @param piece Piece to check
+     * @return True if the piece can fall, false otherwise
+     */
     public boolean canDescend(Piece piece) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -136,18 +192,61 @@ public class Grid extends Observable {
         return true;
     }
 
+    /**
+     * Method to descend a piece
+     */
+    public void descendPiece() {
+        int numbOfFrames = Math.max(1, 7 - level / 2 + 2);
+        if (descendingSpeed != numbOfFrames) {
+            descendingSpeed++;
+        } else {
+            if (canDescend()) {
+                PieceList[0].setPos(PieceList[0].getPos()[0], PieceList[0].getPos()[1] + 1);
+            } else {
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        if (PieceGrid[i][j] != 0) {
+                            CurrentGrid[i + PieceList[0].getPos()[0]][j + PieceList[0].getPos()[1]] = PieceGrid[i][j];
+                            PieceGrid[i][j] = 0;
+                        }
+                    }
+                }
+                createNewPiece();
+            }
+            descendingSpeed = 0;
+        }
+    }
+
+    /**
+     * Method to return the grid
+     * 
+     * @return Grid of the game
+     */
     public int[][] returnGrid() {
         return DisplayGrid;
     }
 
+    /**
+     * Method to return the score
+     * 
+     * @return Score of the game
+     */
     public int returnScore() {
         return score;
     }
 
+    /**
+     * Method to return the best score
+     * 
+     * @return Best score of the game
+     */
     public int returnBestScore() {
         return bestscore;
     }
 
+    /**
+     * Method to update the grid
+     */
     public void updateGrid() {
         clearDisplayGrid();
         descendPiece();
@@ -158,6 +257,9 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to create a new piece
+     */
     public void createNewPiece() {
         if (PieceList[1] == null || PieceList[0] == null) {
             PieceList[0] = Piece.placeRandomPiece(PieceGrid, true);
@@ -183,15 +285,18 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to hold a piece
+     */
     public void holdPiece() {
         if (holdPiece == null) {
             holdPiece = new Piece(PieceList[0]);
             holdPiece.setPos(3, 0);
-            erasePieceGrid(PieceList[0]);
+            erasePieceGrid();
             createNewPiece();
         } else {
             Piece temp = new Piece(PieceList[0]);
-            erasePieceGrid(PieceList[0]);
+            erasePieceGrid();
             PieceList[0] = new Piece(holdPiece);
             addToPieceGrid(PieceList[0]);
             holdPiece = temp;
@@ -199,7 +304,11 @@ public class Grid extends Observable {
         }
     }
 
-    public void erasePieceGrid(Piece piece) {
+    /**
+     * Method to erase the piece from the piece grid
+     * 
+     */
+    public void erasePieceGrid() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 PieceGrid[i][j] = 0;
@@ -207,6 +316,9 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to end the game
+     */
     private void gameover() {
         System.out.println("Game Over");
         soundPlayer.stopSound(0);
@@ -233,6 +345,11 @@ public class Grid extends Observable {
         notifyObservers("Game Over");
     }
 
+    /**
+     * Method to add a piece to the piece grid
+     * 
+     * @param piece Piece to add
+     */
     private void addToPieceGrid(Piece piece) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -243,6 +360,11 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to check if a piece can descend
+     * 
+     * @return True if the piece can descend, false otherwise
+     */
     public boolean canDescend() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -257,28 +379,9 @@ public class Grid extends Observable {
         return true;
     }
 
-    public void descendPiece() {
-        int numbOfFrames = Math.max(1, 7 - level / 2 + 2);
-        if (descendingSpeed != numbOfFrames) {
-            descendingSpeed++;
-        } else {
-            if (canDescend()) {
-                PieceList[0].setPos(PieceList[0].getPos()[0], PieceList[0].getPos()[1] + 1);
-            } else {
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 4; j++) {
-                        if (PieceGrid[i][j] != 0) {
-                            CurrentGrid[i + PieceList[0].getPos()[0]][j + PieceList[0].getPos()[1]] = PieceGrid[i][j];
-                            PieceGrid[i][j] = 0;
-                        }
-                    }
-                }
-                createNewPiece();
-            }
-            descendingSpeed = 0;
-        }
-    }
-
+    /**
+     * Method to fusion the grid piece and current grid to display grid
+     */
     public void fusionGrid() {
         int xPos = PieceList[0].getPos()[0];
         int yPos = PieceList[0].getPos()[1];
@@ -312,6 +415,9 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to clear the display grid
+     */
     public void clearDisplayGrid() {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 20; j++) {
@@ -320,18 +426,38 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to get the piece grid
+     * 
+     * @return Piece grid
+     */
     public int[][] getPieceGrid() {
         return PieceGrid;
     }
 
+    /**
+     * Method to get the next piece
+     * 
+     * @return Next piece
+     */
     public Piece returnNextPiece() {
         return PieceList[1];
     }
 
+    /**
+     * Method to get the hold piece
+     * 
+     * @return Hold piece
+     */
     public Piece returnHoldPiece() {
         return holdPiece;
     }
 
+    /**
+     * Method to delete a line if it is full
+     * 
+     * @return True if a line is full, false otherwise
+     */
     public boolean suppriLigne() {
         boolean complete = false;
         int linesRemoved = 0;
@@ -373,15 +499,28 @@ public class Grid extends Observable {
         return complete;
     }
 
+    /**
+     * Method to get the level
+     * 
+     * @return Level of the game
+     */
     public short getLevel() {
         return level;
     }
 
+    /**
+     * Method to calculate the level
+     */
     private void calculateLevel() {
         short newLevel = (short) Math.max(1, (Math.log(score + 1) / Math.log(3) / 2));     
         level = newLevel;
     }
 
+    /**
+     * Method to move a piece horizontally
+     * 
+     * @param moveRight True if the piece needs to move right, false to move left
+     */
     public void movePieceHorizontally(boolean moveRight) {
         boolean canMove = true;
         int direction = moveRight ? 1 : -1;
@@ -404,6 +543,9 @@ public class Grid extends Observable {
         }
     }
 
+    /**
+     * Method to rotate the piece
+     */
     public void rotatePiece() {
         int[][] newPieceGrid = new int[4][4];
         for (int i = 0; i < 4; i++) {
@@ -414,6 +556,11 @@ public class Grid extends Observable {
         PieceGrid = newPieceGrid;
     }
 
+    /**
+     * Method to check if a piece can rotate
+     * 
+     * @return True if the piece can rotate, false otherwise
+     */
     public boolean canRotate() {
         int[][] newPieceGrid = new int[4][4];
         for (int i = 0; i < 4; i++) {

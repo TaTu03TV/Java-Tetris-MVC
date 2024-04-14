@@ -19,6 +19,16 @@ import models.Piece;
 import controllers.GameController;
 import models.Grid;
 
+/**
+ * Class to create the main board of the game
+ * 
+ * This class is used to create the main board of the game. It contains the title, score, best score, level, next piece, hold piece, and game over label. It also contains methods to start the game, update the game, reset the game, draw the grid, clear the display grid, and draw the piece preview.
+ * 
+ * @version 1.0
+ * @since 2024-04-14
+ * @see GameController
+ * @see Grid
+ */
 public class MainBoard extends JPanel implements Observer {
 
     private static GameController gameController;
@@ -38,6 +48,12 @@ public class MainBoard extends JPanel implements Observer {
 
     private Image backgroundImage;
 
+    /**
+     * Constructor for the MainBoard class
+     * 
+     * @see GameController
+     * @see Grid
+     */
     public MainBoard() {
         setLayout(null);
         try {
@@ -125,6 +141,11 @@ public class MainBoard extends JPanel implements Observer {
         this.start();
     }
 
+    /**
+     * Method to paint the components of the board
+     * 
+     * @param g the graphics object
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -134,11 +155,18 @@ public class MainBoard extends JPanel implements Observer {
         drawPiecePreview(currentGrid.returnHoldPiece(), g, 455, 480, 25);
     }
 
+    /**
+     * Method to start the game
+     * 
+     */
     public void start() {
         currentGrid.start();
-        gameController.start();
     }
 
+    /**
+     * Method to quit or restart the game when it is over
+     * 
+     */
     public void update(Observable o, Object arg) {
         if (arg == null && !GameOver.isVisible()) {
             repaint();
@@ -172,14 +200,23 @@ public class MainBoard extends JPanel implements Observer {
         }
     }
 
+    /**
+     * Method to reset the game
+     * 
+     */
     public void resetGame() {
         GameOver.setVisible(false);
         currentGrid.reset();
         Score.setText("0");
         BestScore.setText(""+currentGrid.returnBestScore());
-
     }
 
+    /**
+     * Method to draw the grid of the game with colors and shadows
+     * 
+     * @param grid the grid of the game
+     * @param g the graphics object
+     */
     public void drawGrid(int[][] grid, Graphics g) {
         // clear le pannel
         g.setColor(new Color(47, 39, 41));
@@ -209,12 +246,25 @@ public class MainBoard extends JPanel implements Observer {
         }
     }
 
+    /**
+     * Method to clear the grid of the game
+     * 
+     */
     public void clearDisplayGrid() {
         Graphics g = this.getGraphics();
         g.setColor(new Color(47, 39, 41));
         g.fillRect(10, 140, 400, 800);
     }
 
+    /**
+     * Method to draw the preview of the piece falling
+     * 
+     * @param p the piece to draw
+     * @param g the graphics object
+     * @param x the x position
+     * @param y the y position
+     * @param blocSize the size of the bloc
+     */
     public void drawPiecePreview(Piece p, Graphics g, int x, int y, int blocSize) {
         if (p != null) {
             int[][] shape = p.getShape();

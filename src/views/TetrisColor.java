@@ -2,6 +2,14 @@ package views;
 
 import java.awt.Color;
 
+/**
+ * Enum class to define the colors of the Tetris pieces
+ * 
+ * This enum class is used to define the colors of the Tetris pieces. It contains the color and value of each Tetris piece.
+ * 
+ * @version 1.0
+ * @since 2024-04-14
+ */
 public enum TetrisColor {
     I(new Color(0, 188, 212), 1), // Cyan
     O(new Color(255, 235, 59), 2), // Yellow
@@ -16,15 +24,31 @@ public enum TetrisColor {
     private Color color;
     private int value;
 
+    /**
+     * Constructor for the TetrisColor enum
+     * 
+     * @param color the color of the Tetris piece
+     * @param value the value of the Tetris piece
+     */
     TetrisColor(Color color, int value) {
         this.color = color;
         this.value = value;
     }
 
+    /**
+     * Get the color of the Tetris piece
+     * 
+     * @return the color of the Tetris piece
+     */
     public Color getColor() {
         return this.color;
     }
 
+    /**
+     * Get the color of the Tetris piece by its value
+     * 
+     * @return the value of the Tetris piece
+     */
     public static TetrisColor getColorByValue(int value) {
         for (TetrisColor color : TetrisColor.values()) {
             if (color.value == value) {

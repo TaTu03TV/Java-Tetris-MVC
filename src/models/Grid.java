@@ -197,7 +197,7 @@ public class Grid extends Observable {
      * Method to descend a piece
      */
     public void descendPiece() {
-        int numbOfFrames = Math.max(1, 7 - level / 2 + 2);
+        int numbOfFrames = Math.max(1, 7 - level + 2);
         if (descendingSpeed != numbOfFrames) {
             descendingSpeed++;
         } else {

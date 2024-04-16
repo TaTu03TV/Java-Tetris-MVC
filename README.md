@@ -19,7 +19,7 @@ To get a local copy up and running, follow these steps:
 ```sh
 git clone https://github.com/TaTu03TV/Java-Tetris-MVC.git
 ```
-2. Open the project in your preferred Java IDE (e.g., IntelliJ IDEA, Eclipse)
+2. Open the project in your preferred Java IDE (e.g., VsCode, Eclipse, Neovim)
 
 3. Run the [`Main.java`] file to start the game
 

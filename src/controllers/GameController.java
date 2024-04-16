@@ -58,6 +58,10 @@ public class GameController {
                 if (e.getKeyChar() == 'h' || e.getKeyChar() == 'H') {
                     grid.holdPiece();
                 }
+                //if we press echap, we close the game
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                    System.exit(0);
+                }
             } 
         });
         board.setFocusable(true);

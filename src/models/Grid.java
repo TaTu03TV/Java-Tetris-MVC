@@ -11,7 +11,8 @@ import java.util.Scanner;
  * 
  * Class to represent the grid of the game
  * 
- * This class is responsible for managing the grid of the game, the pieces, the score, the level and the sounds
+ * This class is responsible for managing the grid of the game, the pieces, the
+ * score, the level and the sounds
  * 
  * @version 1.0
  * @since 2024-04-14
@@ -52,7 +53,7 @@ public class Grid extends Observable {
     /**
      * Method to initialize the sounds of the game
      */
-    private void initializeSounds(float volume){
+    private void initializeSounds(float volume) {
         soundPlayer.addSoundFile("/assets/Sounds/Musics/theme.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/clear.wav");
         soundPlayer.addSoundFile("/assets/Sounds/Effects/gameover.wav");
@@ -62,7 +63,6 @@ public class Grid extends Observable {
         soundPlayer.playSound(0);
         soundPlayer.loopSound(0);
     }
-
 
     /**
      * Method to initialize the grids of the game
@@ -291,17 +291,17 @@ public class Grid extends Observable {
      */
     public void holdPiece() {
         if (holdPiece == null) {
+            erasePieceGrid();
             holdPiece = new Piece(PieceList[0]);
             holdPiece.setPos(3, 0);
-            erasePieceGrid();
             createNewPiece();
         } else {
             Piece temp = new Piece(PieceList[0]);
             erasePieceGrid();
             PieceList[0] = new Piece(holdPiece);
-            addToPieceGrid(PieceList[0]);
             holdPiece = temp;
             holdPiece.setPos(3, 0);
+            addToPieceGrid(PieceList[0]);
         }
     }
 
@@ -386,6 +386,7 @@ public class Grid extends Observable {
     public void fusionGrid() {
         int xPos = PieceList[0].getPos()[0];
         int yPos = PieceList[0].getPos()[1];
+        try{ 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i + ghostPiece.getPos()[0] < DisplayGrid.length
@@ -396,7 +397,11 @@ public class Grid extends Observable {
                 }
             }
         }
-
+        }
+        catch (Exception e) {
+            System.out.println("Error: " + e.getMessage() + "Reverting fusionGrid() to previous version");
+        }
+        try {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (i + xPos < DisplayGrid.length && j + yPos < DisplayGrid[0].length) {
@@ -405,6 +410,10 @@ public class Grid extends Observable {
                     }
                 }
             }
+        }
+        }
+        catch (Exception e) {
+            System.out.println("Error: " + e.getMessage() + "Reverting fusionGrid() to previous version");
         }
 
         for (int i = 0; i < 10; i++) {
